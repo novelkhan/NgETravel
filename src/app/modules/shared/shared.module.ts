@@ -4,6 +4,7 @@ import { NotFoundComponent } from './components/errors/not-found/not-found.compo
 import { ValidationMessagesComponent } from './components/errors/validation-messages/validation-messages.component';
 import { NotificationComponent } from './components/modals/notification/notification.component';
 import { ExpiringSessionCountdownComponent } from './components/modals/expiring-session-countdown/expiring-session-countdown.component';
+import { UserHasRoleDirective } from './directives/user-has-role.directive';
 
 
 
@@ -12,7 +13,8 @@ import { ExpiringSessionCountdownComponent } from './components/modals/expiring-
     NotFoundComponent,
     ValidationMessagesComponent,
     NotificationComponent,
-    ExpiringSessionCountdownComponent
+    ExpiringSessionCountdownComponent,
+    UserHasRoleDirective
   ],
   imports: [
     CommonModule
