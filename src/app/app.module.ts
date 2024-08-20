@@ -10,6 +10,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { CustomerComponent } from './components/customer/customer.component';
 import { AccountModule } from './modules/account/account.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { SharedModule } from './modules/shared/shared.module';
 
 //Angular 16 project is created using 'npx -p @angular/cli@16 ng new NgETravel' command. Guide Link- https://www.youtube.com/watch?v=LYNG3kcKRQ8
 
@@ -26,7 +27,8 @@ import { AdminModule } from './modules/admin/admin.module';
     AppRoutingModule,
     BrowserAnimationsModule,
     AccountModule,
-    AdminModule
+    AdminModule,
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
