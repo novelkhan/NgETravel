@@ -8,6 +8,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { HomeComponent } from './components/home/home.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { CustomerComponent } from './components/customer/customer.component';
+import { AccountModule } from './modules/account/account.module';
 
 //Angular 16 project is created using 'npx -p @angular/cli@16 ng new NgETravel' command. Guide Link- https://www.youtube.com/watch?v=LYNG3kcKRQ8
 
@@ -22,7 +23,8 @@ import { CustomerComponent } from './components/customer/customer.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    AccountModule
   ],
   providers: [],
   bootstrap: [AppComponent]
