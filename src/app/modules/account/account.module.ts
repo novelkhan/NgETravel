@@ -6,6 +6,7 @@ import { ConfirmEmailComponent } from './components/confirm-email/confirm-email.
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { SendEmailComponent } from './components/send-email/send-email.component';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
     ConfirmEmailComponent,
     LoginComponent,
     RegisterComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    SendEmailComponent
   ],
   imports: [
     CommonModule,
