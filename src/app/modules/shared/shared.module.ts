@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NotFoundComponent } from './components/errors/not-found/not-found.component';
 import { ValidationMessagesComponent } from './components/errors/validation-messages/validation-messages.component';
 import { NotificationComponent } from './components/modals/notification/notification.component';
+import { ExpiringSessionCountdownComponent } from './components/modals/expiring-session-countdown/expiring-session-countdown.component';
 
 
 
@@ -10,7 +11,8 @@ import { NotificationComponent } from './components/modals/notification/notifica
   declarations: [
     NotFoundComponent,
     ValidationMessagesComponent,
-    NotificationComponent
+    NotificationComponent,
+    ExpiringSessionCountdownComponent
   ],
   imports: [
     CommonModule
