@@ -5,6 +5,9 @@ import { ValidationMessagesComponent } from './components/errors/validation-mess
 import { NotificationComponent } from './components/modals/notification/notification.component';
 import { ExpiringSessionCountdownComponent } from './components/modals/expiring-session-countdown/expiring-session-countdown.component';
 import { UserHasRoleDirective } from './directives/user-has-role.directive';
+import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -18,6 +21,13 @@ import { UserHasRoleDirective } from './directives/user-has-role.directive';
   ],
   imports: [
     CommonModule
+  ],
+  exports: [
+    RouterModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    ValidationMessagesComponent,
+    UserHasRoleDirective
   ]
 })
 export class SharedModule { }
