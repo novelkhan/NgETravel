@@ -14,6 +14,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AppComponent } from './app.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { PackageModule } from './modules/package/package.module';
 
 //Angular 16 project is created using 'npx -p @angular/cli@16 ng new NgETravel' command. Guide Link- https://www.youtube.com/watch?v=LYNG3kcKRQ8
 
@@ -32,7 +33,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     AccountModule,
     AdminModule,
     SharedModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    PackageModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
