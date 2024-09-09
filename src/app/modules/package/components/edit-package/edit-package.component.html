@@ -1,0 +1,61 @@
+<div class="container">
+    <h2>Edit Package</h2>
+    <form (ngSubmit)="onSubmit()" [formGroup]="editPackageForm">
+      <!-- Package Details -->
+      <div class="form-group">
+        <label for="packageName">Package Name</label>
+        <input id="packageName" formControlName="packageName" class="form-control" />
+      </div>
+  
+      <div class="form-group">
+        <label for="destination">Destination</label>
+        <input id="destination" formControlName="destination" class="form-control" />
+      </div>
+  
+      <div class="form-group">
+        <label for="price">Price</label>
+        <input id="price" formControlName="price" type="number" class="form-control" />
+      </div>
+  
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" class="form-control"></textarea>
+      </div>
+  
+      <!-- Package Data Details -->
+      <div class="form-group">
+        <label for="viaDestination">Via Destination</label>
+        <input id="viaDestination" formControlName="viaDestination" class="form-control" />
+      </div>
+  
+      <div class="form-group">
+        <label for="date">Date</label>
+        <input id="date" formControlName="date" type="date" class="form-control" />
+      </div>
+  
+      <div class="form-group">
+        <label for="availableSeat">Available Seats</label>
+        <input id="availableSeat" formControlName="availableSeat" type="number" class="form-control" />
+      </div>
+  
+      <!-- Package Images -->
+      <div formArrayName="images">
+        <div *ngFor="let image of images.controls; let i = index" [formGroupName]="i">
+          <label for="filename-{{i}}">Image Filename</label>
+          <input id="filename-{{i}}" formControlName="filename" class="form-control" />
+  
+          <label for="filetype-{{i}}">Image Filetype</label>
+          <input id="filetype-{{i}}" formControlName="filetype" class="form-control" />
+  
+          <label for="filesize-{{i}}">Image Filesize</label>
+          <input id="filesize-{{i}}" formControlName="filesize" class="form-control" />
+  
+          <button type="button" (click)="removeImage(i)" class="btn btn-danger">Remove Image</button>
+        </div>
+        <button type="button" (click)="addImage()" class="btn btn-primary">Add Image</button>
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="!editPackageForm.valid">Save</button>
+    </form>
+  </div>
+  

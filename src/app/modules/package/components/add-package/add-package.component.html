@@ -1,1 +1,60 @@
-<p>add-package works!</p>
+<div class="d-flex justify-content-center">
+    <div class="col-12 col-lg-5">
+        <main class="form-signin">
+            <form [formGroup]="addPackageForm" (ngSubmit)="addPackage()" autocomplete="off">
+                <div class="text-center mb-4">
+                    <h3 class="mb-3 font-weight-normal">
+                        Let's Get Started to
+                        <span class="text-danger">Add Package</span>
+                    </h3>
+                </div>
+                <div class="form-floating mb-3">
+                    <input formControlName="packagename" type="text" placeholder="Package Name" class="form-control"
+                        [class.is-invalid]="submitted && addPackageForm.get('packagename')?.errors">
+                    <label for="packagename">Package name</label>
+                    <span class="text-danger" *ngIf="submitted && addPackageForm.get('packagename')?.hasError('required')">
+                        Package name is required
+                    </span>
+                    <span class="text-danger"
+                        *ngIf="submitted && 
+                        addPackageForm.get('packagename')?.hasError('minlength') || addPackageForm.get('packagename')?.hasError('maxlength')">
+                        Package name must be at least 3, and maximum 15 characters
+                    </span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input formControlName="destination" type="text" placeholder="Destination" class="form-control"
+                        [class.is-invalid]="submitted && addPackageForm.get('destination')?.errors">
+                    <label for="destination">Destination</label>
+                    <span class="text-danger" *ngIf="submitted && addPackageForm.get('destination')?.hasError('required')">
+                        Destination is required
+                    </span>
+                    <span class="text-danger"
+                        *ngIf="submitted && 
+                        addPackageForm.get('destination')?.hasError('minlength') || addPackageForm.get('destination')?.hasError('maxlength')">
+                        Destination name must be at least 3, and maximum 15 characters
+                    </span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input formControlName="price" type="number" placeholder="Price" class="form-control"
+                        [class.is-invalid]="submitted && addPackageForm.get('price')?.errors">
+                    <label for="price">Price</label>
+                    <span class="text-danger" *ngIf="submitted && addPackageForm.get('price')?.hasError('required')">
+                        Price is required
+                    </span>
+                    <span class="text-danger" *ngIf="submitted && addPackageForm.get('price')?.hasError('pattern')">
+                        Invalid Price
+                    </span>
+                </div>
+
+                <div class="form-floatin" *ngIf="errorMessages.length > 0">
+                    <app-validation-messages [errorMessages]="errorMessages"></app-validation-messages>
+                </div>
+
+                <div class="d-grid mt-4 px-1">
+                    <button class="btn btn-lg btn-info" type="submit">Add Package</button>
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
