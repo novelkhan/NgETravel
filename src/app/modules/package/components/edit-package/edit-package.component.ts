@@ -3,99 +3,260 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PackageData } from 'src/app/modules/shared/models/package/packageData.model';
 import { PackageService } from '../../services/package.service';
+import { Subscription } from 'rxjs';
+import { Package } from 'src/app/modules/shared/models/package/package.model';
 
 @Component({
   selector: 'app-edit-package',
   templateUrl: './edit-package.component.html',
   styleUrls: ['./edit-package.component.scss']
 })
-export class EditPackageComponent implements OnInit, OnDestroy {
-  editPackageForm: FormGroup;
-  packageId!: number;
+export class EditPackageComponent  implements OnInit {
+  package: any = null;
+  newImages: File[] = [];
 
-  constructor(
-    private fb: FormBuilder,
-    private packageService: PackageService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {
-    this.editPackageForm = this.fb.group({
-      packageName: ['', Validators.required],
-      destination: ['', Validators.required],
-      price: ['', [Validators.required, Validators.min(0)]],
-      description: [''],
-      viaDestination: [''],
-      date: [''],
-      availableSeat: ['', Validators.min(0)],
-      images: this.fb.array([])
-    });
-  }
-
-  get images(): FormArray {
-    return this.editPackageForm.get('images') as FormArray;
-  }
+  constructor(private packageService: PackageService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      this.packageId = +params.get('id')!;
-      this.loadPackage();
+    const id: number = isNaN(+this.route.snapshot.params['id'])
+      ? 0 // Default value or error handling
+      : +this.route.snapshot.params['id'];
+  
+    this.packageService.getPackageById(id).subscribe((data) => {
+      this.package = data;
+  
+      // Initialize packageImages as an empty array if not present
+      if (!this.package.packageImages) {
+        this.package.packageImages = [];
+      }
+  
+      // Transform packageImages for display
+      if (this.package.packageData?.packageImages) {
+        this.package.packageImages = this.package.packageData.packageImages.map((img: any) => ({
+          ...img,
+          url: 'data:image/jpeg;base64,' + img.filebytes,
+        }));
+      }
     });
   }
+  
 
-  loadPackage(): void {
-    this.packageService.getPackageById(this.packageId).subscribe(
-      (packageData: PackageData) => {
-        this.editPackageForm.patchValue({
-          packageName: packageData.packageName,
-          destination: packageData.destination,
-          price: packageData.price,
-          description: packageData.packageData?.description || '',
-          viaDestination: packageData.packageData?.viaDestination || '',
-          date: packageData.packageData?.date ? new Date(packageData.packageData.date).toISOString().split('T')[0] : '',
-          availableSeat: packageData.packageData?.availableSeat || 0
-        });
-
-        if (packageData.packageData?.packageImages) {
-          const images = this.images;
-          packageData.packageData.packageImages.forEach(image => {
-            images.push(this.fb.group({
-              filename: [image.filename, Validators.required],
-              filetype: [image.filetype, Validators.required],
-              filesize: [image.filesize]
-            }));
-          });
-        }
-      },
-      error => {
-        console.error('Error fetching package details:', error);
-      }
-    );
+  onFileSelected(event: Event, index: number): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      this.package.packageImages[index].file = file;
+      const reader = new FileReader();
+      reader.onload = () => (this.package.packageImages[index].url = reader.result as string);
+      reader.readAsDataURL(file);
+    }
   }
 
-  addImage(): void {
-    this.images.push(this.fb.group({
-      filename: ['', Validators.required],
-      filetype: ['', Validators.required],
-      filesize: ['']
-    }));
+  addNewImageSlot(): void {
+    if (!this.package.packageImages) {
+      this.package.packageImages = []; // Initialize the array if it's undefined
+    }
+    this.package.packageImages.push({ url: '', file: null });
   }
+  
 
   removeImage(index: number): void {
-    this.images.removeAt(index);
+    this.package.packageImages.splice(index, 1);
   }
 
   onSubmit(): void {
-    if (this.editPackageForm.valid) {
-      const updatedPackage: PackageData = {
-        ...this.editPackageForm.value,
-        packageId: this.packageId,
-        // Ensure the data structure matches the expected backend format
-      };
-
-      this.packageService.updatePackage(this.packageId, updatedPackage).subscribe(
-        () => this.router.navigate(['/packages']),
-        error => console.error('Error updating package:', error)
-      );
+    if (!this.package?.packageId) {
+      alert('Package ID is missing.');
+      return;
     }
+  
+    // Convert the package object to FormData
+    const formData = new FormData();
+  
+    // Append standard fields
+    formData.append('packageId', this.package.packageId);
+    formData.append('packageName', this.package.packageName);
+    formData.append('destination', this.package.destination);
+    formData.append('price', this.package.price.toString());
+    formData.append('description', this.package.description);
+  
+    // Append images if present
+    if (this.package.packageImages) {
+      this.package.packageImages.forEach((image: any, index: number) => {
+        if (image.file) {
+          formData.append(`images[${index}]`, image.file);
+        }
+      });
+    }
+console.log(formData);
+    // Call the service to update the package
+    this.packageService.updatePackage(this.package?.packageId, formData).subscribe(
+      () => {
+        alert('Package updated successfully!');
+        this.router.navigate(['/packages']);
+      },
+      (error) => {
+        console.error('Failed to update package:', error);
+        alert('Error updating package.');
+      }
+    );
   }
+  
 }
+// /* /*  implements OnInit {/* , OnDestroy { */
+
+//   id: number | null = null;
+//   // paramsSubscription?: Subscription;
+//   // editPackageSubscription?: Subscription;
+  
+//   // editPackageForm: FormGroup;
+//   //packageId!: number;
+//   // package?: Package;
+//   package?: any;
+
+
+//   constructor(
+//     //private fb: FormBuilder,
+//     private packageService: PackageService,
+//     private route: ActivatedRoute,
+//     //private router: Router
+//   ) {
+//     // this.editPackageForm = this.fb.group({
+//     //   packageName: ['', Validators.required],
+//     //   destination: ['', Validators.required],
+//     //   price: ['', [Validators.required, Validators.min(0)]],
+//     //   description: [''],
+//     //   viaDestination: [''],
+//     //   date: [''],
+//     //   availableSeat: ['', Validators.min(0)],
+//     //   images: this.fb.array([])
+//     // });
+//   }
+
+//   // get images(): FormArray {
+//   //   return this.editPackageForm.get('images') as FormArray;
+//   // }
+
+//   ngOnInit(): void {
+//     this.route.paramMap.subscribe(params => {
+//       this.id = +params.get('packageId')!;   //this.id = parseInt(params.get('packageId') as string, 10);  ///parseInt(..., 10): Converts the string to a number. The second argument, 10, specifies the base (decimal) for parsing.
+//       this.loadPackage();
+//     });
+//   }
+
+//   loadPackage(): void {
+//     // this.packageService.getPackageById(this.packageId).subscribe(
+//     //   (packageValue: Package) => {
+//     //     this.editPackageForm.patchValue({
+//     //       packageName: packageData.packageName,
+//     //       destination: packageData.destination,
+//     //       price: packageData.price,
+//     //       description: packageData.packageData?.description || '',
+//     //       viaDestination: packageData.packageData?.viaDestination || '',
+//     //       date: packageData.packageData?.date ? new Date(packageData.packageData.date).toISOString().split('T')[0] : '',
+//     //       availableSeat: packageData.packageData?.availableSeat || 0
+//     //     });
+
+//     //     if (packageData.packageData?.packageImages) {
+//     //       const images = this.images;
+//     //       packageData.packageData.packageImages.forEach(image => {
+//     //         images.push(this.fb.group({
+//     //           filename: [image.filename, Validators.required],
+//     //           filetype: [image.filetype, Validators.required],
+//     //           filesize: [image.filesize]
+//     //         }));
+//     //       });
+//     //     }
+//     //   },
+//     //   error => {
+//     //     console.error('Error fetching package details:', error);
+//     //   }
+//     // );
+  
+//     /* this.packageService.getPackageById(this.id as number)
+//           .subscribe({
+//             next: (response) => {
+//               this.package= response;
+//             }
+//           }); */
+
+//     this.packageService.getPackageById(this.id as number)
+//     .subscribe({
+//       next: (response) => {
+
+
+//         var pkgImg : any[] = []; 
+
+//         response.packageData?.packageImages?.forEach( image => {
+//           var pImg:any = {
+//             packageImageId: image.packageImageId,
+//             filename: image.filename,
+//             filetype: image.filetype,
+//             filesize: image.filesize,
+//             filebytes: image.filebytes,  // Base64 or binary format depending on how it is serialized
+//             url: 'data:image/jpeg;base64,' + image.filebytes,
+            
+//             packageDataId: image.packageDataId//,
+//             //image: null
+
+//           };
+
+//           pkgImg.push(pImg);
+//         });
+
+
+//         // this.package= response;
+//         var pkg:any = {
+//           packageId : response.packageId,
+//           packageName : response.packageName,
+//           destination : response.destination,
+//           price : response.price,
+//           dateCreated : response.dateCreated,
+
+//           packageDataId: response.packageData?.packageDataId,
+//           description: response.packageData?.description,
+//           viaDestination: response.packageData?.viaDestination,
+//           date: response.packageData?.date,
+//           availableSeat: response.packageData?.availableSeat,
+//           packageImages: pkgImg
+//        };
+
+//        this.package = pkg;
+//       }
+//     });
+//   }
+
+//   // addImage(): void {
+//   //   this.images.push(this.fb.group({
+//   //     filename: ['', Validators.required],
+//   //     filetype: ['', Validators.required],
+//   //     filesize: ['']
+//   //   }));
+//   // }
+
+//   // removeImage(index: number): void {
+//   //   this.images.removeAt(index);
+//   // }
+
+//   onSubmit(): void {
+//     // if (this.editPackageForm.valid) {
+//     //   const updatedPackage: PackageData = {
+//     //     ...this.editPackageForm.value,
+//     //     packageId: this.packageId,
+//     //     // Ensure the data structure matches the expected backend format
+//     //   };
+
+//     //   this.packageService.updatePackage(this.packageId, updatedPackage).subscribe(
+//     //     () => this.router.navigate(['/packages']),
+//     //     error => console.error('Error updating package:', error)
+//     //   );
+//     // }
+
+    
+//   }
+
+
+//   // ngOnDestroy(): void {
+//   //   this.paramsSubscription?.unsubscribe();
+//   //   this.editPackageSubscription?.unsubscribe();
+//   // }
+// }

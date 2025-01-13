@@ -23,7 +23,8 @@
                     <a href="#" class="btn btn-sm btn-outline-danger rounded-pill">Delete</a> <!-- {{package.packageId}} -->
                   </div>
                   <div class="col-6">
-                    <a [routerLink]="['/packages/edit-package/{{package.packageId}}']" class="btn btn-sm btn-outline-primary rounded-pill">Edit</a>
+                    <!-- <a [routerLink]="['/packages/edit-package/{{package.packageId}}']" class="btn btn-sm btn-outline-primary rounded-pill">Edit</a> -->
+                    <a [routerLink]="['/packages/edit-package', package.packageId]" class="btn btn-sm btn-outline-primary rounded-pill">Edit</a>
                   </div>
                 </div>
                 <div class="row justify-content-center">
