@@ -100,37 +100,47 @@ export class EditPackageComponent  implements OnInit {
       return;
     }
   
-    // Convert the package object to FormData
     const formData = new FormData();
   
-    // Append standard fields
-    formData.append('packageId', this.package.packageId);
+    // Append basic package fields
+    formData.append('packageId', this.package.packageId.toString());
     formData.append('packageName', this.package.packageName);
     formData.append('destination', this.package.destination);
     formData.append('price', this.package.price.toString());
     formData.append('dateCreated', this.package.dateCreated);
-
-
-    formData.append('packageData.packageDataId', this.package.packageData.packageDataId.toString());
-    formData.append('packageData.description', this.package.packageData.description);
-    formData.append('packageData.viaDestination', this.package.packageData.viaDestination);
-    formData.append('packageData.date', this.package.packageData.date);
-    formData.append('packageData.availableSeat', this.package.packageData.availableSeat.toString());
   
-    // Append images if present
-    if (this.package.packageData.packageImages) {
+    // Append packageData fields
+    if (this.package.packageData) {
+      formData.append('packageData.packageDataId', this.package.packageData.packageDataId.toString());
+      formData.append('packageData.description', this.package.packageData.description);
+      formData.append('packageData.viaDestination', this.package.packageData.viaDestination);
+      formData.append('packageData.date', this.package.packageData.date);
+      formData.append('packageData.availableSeat', this.package.packageData.availableSeat.toString());
+    }
+  
+    // Append packageImages
+    if (this.package.packageData?.packageImages) {
       this.package.packageData.packageImages.forEach((image: any, index: number) => {
-        if (image.imageFile && image.packageImageId) {
+        if (image.imageFile) {
+          // Append image file
+          formData.append(`packageData.packageImages[${index}].imageFile`, image.imageFile, image.filename || `image_${index}`);
+        }
+  
+        // Append additional image metadata if needed
+        if (image.packageImageId) {
           formData.append(`packageData.packageImages[${index}].packageImageId`, image.packageImageId.toString());
-          formData.append(`packageData.packageImages[${index}].imageFile`, image.imageFile);
         }
-        else
-        {
-          formData.append(`packageData.packageImages[${index}].imageFile`, image.imageFile);
-        }
+        formData.append(`packageData.packageImages[${index}].filename`, image.filename || '');
+        formData.append(`packageData.packageImages[${index}].filetype`, image.filetype || '');
+        formData.append(`packageData.packageImages[${index}].filesize`, image.filesize || '');
       });
     }
-console.log(formData);
+  
+    // Debug: Log FormData keys and values
+    for (const [key, value] of (formData as any).entries()) {
+      console.log(key, value);
+    }
+  
     // Call the service to update the package
     this.packageService.updatePackage(this.package?.packageId, formData).subscribe(
       () => {
@@ -143,6 +153,8 @@ console.log(formData);
       }
     );
   }
+  
+  
   
 }
 // /* /*  implements OnInit {/* , OnDestroy { */
