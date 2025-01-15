@@ -6,5 +6,6 @@ export interface PackageImage {
     filebytes?: any;  // Base64 or binary format depending on how it is serialized
     
     packageDataId?: number;
-    image?: any;
+    imageFile?: any;
+    url?: any;
 }

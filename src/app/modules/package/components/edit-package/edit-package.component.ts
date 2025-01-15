@@ -13,7 +13,7 @@ import { Package } from 'src/app/modules/shared/models/package/package.model';
 })
 export class EditPackageComponent  implements OnInit {
   package: any = null;
-  newImages: File[] = [];
+  //newImages: File[] = [];
 
   constructor(private packageService: PackageService, private route: ActivatedRoute, private router: Router) {}
 
@@ -26,13 +26,13 @@ export class EditPackageComponent  implements OnInit {
       this.package = data;
   
       // Initialize packageImages as an empty array if not present
-      if (!this.package.packageImages) {
-        this.package.packageImages = [];
+      if (!this.package.packageData?.packageImages) {
+        this.package.packageData.packageImages = [];
       }
   
       // Transform packageImages for display
       if (this.package.packageData?.packageImages) {
-        this.package.packageImages = this.package.packageData.packageImages.map((img: any) => ({
+        this.package.packageData.packageImages = this.package.packageData.packageImages.map((img: any) => ({
           ...img,
           url: 'data:image/jpeg;base64,' + img.filebytes,
         }));
@@ -44,23 +44,23 @@ export class EditPackageComponent  implements OnInit {
   onFileSelected(event: Event, index: number): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
-      this.package.packageImages[index].file = file;
+      this.package.packageData.packageImages[index].imageFile = file;
       const reader = new FileReader();
-      reader.onload = () => (this.package.packageImages[index].url = reader.result as string);
+      reader.onload = () => (this.package.packageData.packageImages[index].url = reader.result as string);
       reader.readAsDataURL(file);
     }
   }
 
   addNewImageSlot(): void {
-    if (!this.package.packageImages) {
-      this.package.packageImages = []; // Initialize the array if it's undefined
+    if (!this.package.packageData.packageImages) {
+      this.package.packageData.packageImages = []; // Initialize the array if it's undefined
     }
-    this.package.packageImages.push({ url: '', file: null });
+    this.package.packageData.packageImages.push({ url: '', imageFile: null });
   }
   
 
   removeImage(index: number): void {
-    this.package.packageImages.splice(index, 1);
+    this.package.packageData.packageImages.splice(index, 1);
   }
 
   onSubmit(): void {
@@ -77,13 +77,25 @@ export class EditPackageComponent  implements OnInit {
     formData.append('packageName', this.package.packageName);
     formData.append('destination', this.package.destination);
     formData.append('price', this.package.price.toString());
-    formData.append('description', this.package.description);
+    formData.append('dateCreated', this.package.dateCreated);
+
+
+    formData.append('packageData.packageDataId', this.package.packageData.packageDataId.toString());
+    formData.append('packageData.description', this.package.packageData.description);
+    formData.append('packageData.viaDestination', this.package.packageData.viaDestination);
+    formData.append('packageData.date', this.package.packageData.date);
+    formData.append('packageData.availableSeat', this.package.packageData.availableSeat.toString());
   
     // Append images if present
-    if (this.package.packageImages) {
-      this.package.packageImages.forEach((image: any, index: number) => {
-        if (image.file) {
-          formData.append(`images[${index}]`, image.file);
+    if (this.package.packageData.packageImages) {
+      this.package.packageData.packageImages.forEach((image: any, index: number) => {
+        if (image.imageFile && image.packageImageId) {
+          formData.append(`packageData.packageImages[${index}].packageImageId`, image.packageImageId.toString());
+          formData.append(`packageData.packageImages[${index}].imageFile`, image.imageFile);
+        }
+        else if (image.imageFile && !(image.packageImageId))
+        {
+          formData.append(`packageData.packageImages[${index}].imageFile`, image.imageFile);
         }
       });
     }
