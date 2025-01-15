@@ -126,10 +126,12 @@ export class EditPackageComponent  implements OnInit {
           formData.append(`packageData.packageImages[${index}].imageFile`, image.imageFile, image.filename || `image_${index}`);
         }
   
-        // Append additional image metadata if needed
+        
+        // Include existing packageImageId for tracking
         if (image.packageImageId) {
           formData.append(`packageData.packageImages[${index}].packageImageId`, image.packageImageId.toString());
         }
+        // Append additional image metadata if needed
         formData.append(`packageData.packageImages[${index}].filename`, image.filename || '');
         formData.append(`packageData.packageImages[${index}].filetype`, image.filetype || '');
         formData.append(`packageData.packageImages[${index}].filesize`, image.filesize || '');
