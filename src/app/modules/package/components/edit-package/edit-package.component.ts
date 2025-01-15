@@ -25,38 +25,69 @@ export class EditPackageComponent  implements OnInit {
     this.packageService.getPackageById(id).subscribe((data) => {
       this.package = data;
   
-      // Initialize packageImages as an empty array if not present
-      if (!this.package.packageData?.packageImages) {
+      // Ensure packageData is initialized
+      if (!this.package.packageData) {
+        this.package.packageData = {
+          packageDataId: 0,
+          description: '',
+          viaDestination: '',
+          date: '',
+          availableSeat: 0,
+          packageImages: [],
+        };
+      }
+  
+      // Ensure packageImages is initialized
+      if (!this.package.packageData.packageImages) {
         this.package.packageData.packageImages = [];
       }
   
       // Transform packageImages for display
-      if (this.package.packageData?.packageImages) {
-        this.package.packageData.packageImages = this.package.packageData.packageImages.map((img: any) => ({
-          ...img,
-          url: 'data:image/jpeg;base64,' + img.filebytes,
-        }));
-      }
+      this.package.packageData.packageImages = this.package.packageData.packageImages.map((img: any) => ({
+        ...img,
+        url: img.filebytes ? 'data:image/jpeg;base64,' + img.filebytes : '',
+        imageFile: null, // For new uploads
+      }));
     });
   }
+  
   
 
   onFileSelected(event: Event, index: number): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
+      // Ensure the selected file is properly assigned
       this.package.packageData.packageImages[index].imageFile = file;
+      this.package.packageData.packageImages[index].filename = file.name;
+      this.package.packageData.packageImages[index].filetype = file.type;
+      this.package.packageData.packageImages[index].filesize = file.size.toString();
+      
+      // Generate a preview URL for the image
       const reader = new FileReader();
-      reader.onload = () => (this.package.packageData.packageImages[index].url = reader.result as string);
+      reader.onload = () => {
+        this.package.packageData.packageImages[index].url = reader.result as string;
+      };
       reader.readAsDataURL(file);
     }
   }
+  
 
   addNewImageSlot(): void {
     if (!this.package.packageData.packageImages) {
       this.package.packageData.packageImages = []; // Initialize the array if it's undefined
     }
-    this.package.packageData.packageImages.push({ url: '', imageFile: null });
+    // Add a new image slot with all necessary properties initialized
+    this.package.packageData.packageImages.push({
+      packageImageId: null, // Set to null for new images
+      filename: '',
+      filetype: '',
+      filesize: '',
+      filebytes: '',
+      url: '', // Placeholder for image preview
+      imageFile: null, // File object for upload
+    });
   }
+  
   
 
   removeImage(index: number): void {
@@ -93,7 +124,7 @@ export class EditPackageComponent  implements OnInit {
           formData.append(`packageData.packageImages[${index}].packageImageId`, image.packageImageId.toString());
           formData.append(`packageData.packageImages[${index}].imageFile`, image.imageFile);
         }
-        else if (image.imageFile && !(image.packageImageId))
+        else
         {
           formData.append(`packageData.packageImages[${index}].imageFile`, image.imageFile);
         }
