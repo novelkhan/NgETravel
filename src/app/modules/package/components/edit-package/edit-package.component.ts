@@ -1,31 +1,34 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PackageData } from 'src/app/modules/shared/models/package/packageData.model';
 import { PackageService } from '../../services/package.service';
-import { Subscription } from 'rxjs';
-import { Package } from 'src/app/modules/shared/models/package/package.model';
 
 @Component({
   selector: 'app-edit-package',
   templateUrl: './edit-package.component.html',
-  styleUrls: ['./edit-package.component.scss']
+  styleUrls: ['./edit-package.component.scss'],
 })
-export class EditPackageComponent  implements OnInit {
-  package: any = null;
-  //newImages: File[] = [];
+export class EditPackageComponent implements OnInit {
+  package: any = null; // Holds the package data
 
-  constructor(private packageService: PackageService, private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private packageService: PackageService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
+  /**
+   * Lifecycle hook called on component initialization.
+   * Fetches the package data based on the ID from the route.
+   */
   ngOnInit(): void {
     const id: number = isNaN(+this.route.snapshot.params['id'])
       ? 0 // Default value or error handling
       : +this.route.snapshot.params['id'];
-  
+
     this.packageService.getPackageById(id).subscribe((data) => {
       this.package = data;
-  
-      // Ensure packageData is initialized
+
+      // Initialize packageData if not defined
       if (!this.package.packageData) {
         this.package.packageData = {
           packageDataId: 0,
@@ -36,79 +39,99 @@ export class EditPackageComponent  implements OnInit {
           packageImages: [],
         };
       }
-  
-      // Ensure packageImages is initialized
+
+
+      // Format the date to 'yyyy-MM-dd' for the input field
+      if (this.package.packageData.date) {
+        this.package.packageData.date = new Date(this.package.packageData.date)
+          .toISOString()
+          .split('T')[0];
+      }
+
+
+
+      // Initialize packageImages array if undefined
       if (!this.package.packageData.packageImages) {
         this.package.packageData.packageImages = [];
       }
-  
-      // Transform packageImages for display
+
+      // Transform packageImages for preview and file management
       this.package.packageData.packageImages = this.package.packageData.packageImages.map((img: any) => ({
         ...img,
         url: img.filebytes ? 'data:image/jpeg;base64,' + img.filebytes : '',
-        imageFile: null, // For new uploads
+        imageFile: null, // Placeholder for new uploads
       }));
     });
   }
-  
-  
 
+  /**
+   * Handles file selection for image uploads.
+   * Updates the corresponding image object in the package data.
+   */
   onFileSelected(event: Event, index: number): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
-      // Ensure the selected file is properly assigned
-      this.package.packageData.packageImages[index].imageFile = file;
-      this.package.packageData.packageImages[index].filename = file.name;
-      this.package.packageData.packageImages[index].filetype = file.type;
-      this.package.packageData.packageImages[index].filesize = file.size.toString();
-      
-      // Generate a preview URL for the image
+      const image = this.package.packageData.packageImages[index];
+      image.imageFile = file;
+      image.filename = file.name;
+      image.filetype = file.type;
+      image.filesize = file.size.toString();
+
+      // Generate a preview URL for the selected image
       const reader = new FileReader();
       reader.onload = () => {
-        this.package.packageData.packageImages[index].url = reader.result as string;
+        image.url = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
   }
-  
 
+  /**
+   * Adds a new slot for uploading an image.
+   */
   addNewImageSlot(): void {
     if (!this.package.packageData.packageImages) {
-      this.package.packageData.packageImages = []; // Initialize the array if it's undefined
+      this.package.packageData.packageImages = []; // Initialize array if not defined
     }
-    // Add a new image slot with all necessary properties initialized
+
+    // Add a new image slot with default properties
     this.package.packageData.packageImages.push({
-      packageImageId: null, // Set to null for new images
+      packageImageId: null,
       filename: '',
       filetype: '',
       filesize: '',
       filebytes: '',
-      url: '', // Placeholder for image preview
-      imageFile: null, // File object for upload
+      url: '',
+      imageFile: null,
     });
   }
-  
-  
 
+  /**
+   * Removes an image from the package data by index.
+   */
   removeImage(index: number): void {
     this.package.packageData.packageImages.splice(index, 1);
   }
 
+  /**
+   * Submits the form data to update the package.
+   * Collects form data, prepares it for submission, and sends it to the service.
+   */
   onSubmit(): void {
     if (!this.package?.packageId) {
       alert('Package ID is missing.');
       return;
     }
-  
+
     const formData = new FormData();
-  
+
     // Append basic package fields
     formData.append('packageId', this.package.packageId.toString());
     formData.append('packageName', this.package.packageName);
     formData.append('destination', this.package.destination);
     formData.append('price', this.package.price.toString());
     formData.append('dateCreated', this.package.dateCreated);
-  
+
     // Append packageData fields
     if (this.package.packageData) {
       formData.append('packageData.packageDataId', this.package.packageData.packageDataId.toString());
@@ -117,32 +140,32 @@ export class EditPackageComponent  implements OnInit {
       formData.append('packageData.date', this.package.packageData.date);
       formData.append('packageData.availableSeat', this.package.packageData.availableSeat.toString());
     }
-  
+
     // Append packageImages
     if (this.package.packageData?.packageImages) {
       this.package.packageData.packageImages.forEach((image: any, index: number) => {
         if (image.imageFile) {
-          // Append image file
+          // Append the image file for upload
           formData.append(`packageData.packageImages[${index}].imageFile`, image.imageFile, image.filename || `image_${index}`);
         }
-  
-        
-        // Include existing packageImageId for tracking
+
+        // Include existing packageImageId for tracking (if available)
         if (image.packageImageId) {
           formData.append(`packageData.packageImages[${index}].packageImageId`, image.packageImageId.toString());
         }
-        // Append additional image metadata if needed
+
+        // Append additional metadata
         formData.append(`packageData.packageImages[${index}].filename`, image.filename || '');
         formData.append(`packageData.packageImages[${index}].filetype`, image.filetype || '');
         formData.append(`packageData.packageImages[${index}].filesize`, image.filesize || '');
       });
     }
-  
+
     // Debug: Log FormData keys and values
     for (const [key, value] of (formData as any).entries()) {
       console.log(key, value);
     }
-  
+
     // Call the service to update the package
     this.packageService.updatePackage(this.package?.packageId, formData).subscribe(
       () => {
@@ -155,10 +178,36 @@ export class EditPackageComponent  implements OnInit {
       }
     );
   }
-  
-  
-  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // /* /*  implements OnInit {/* , OnDestroy { */
 
 //   id: number | null = null;
