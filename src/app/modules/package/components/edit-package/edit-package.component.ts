@@ -43,10 +43,18 @@ export class EditPackageComponent implements OnInit {
 
       // Format the date to 'yyyy-MM-dd' for the input field
       if (this.package.packageData.date) {
-        this.package.packageData.date = new Date(this.package.packageData.date)
-          .toISOString()
-          .split('T')[0];
+        const localDate = new Date(this.package.packageData.date);
+        const year = localDate.getFullYear();
+        const month = String(localDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        const day = String(localDate.getDate()).padStart(2, '0');
+        this.package.packageData.date = `${year}-${month}-${day}`; // Format as yyyy-MM-dd
       }
+      
+      // if (this.package.packageData.date) {
+      //   this.package.packageData.date = new Date(this.package.packageData.date)
+      //     .toISOString()
+      //     .split('T')[0];
+      // }
 
 
 
