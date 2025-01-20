@@ -8,7 +8,8 @@ import { PackageService } from '../../services/package.service';
   styleUrls: ['./edit-package.component.scss'],
 })
 export class EditPackageComponent implements OnInit {
-  package: any = null; // Holds the package data
+  // Holds the package data to be edited
+  package: any = null;
 
   constructor(
     private packageService: PackageService,
@@ -17,59 +18,72 @@ export class EditPackageComponent implements OnInit {
   ) {}
 
   /**
-   * Lifecycle hook called on component initialization.
-   * Fetches the package data based on the ID from the route.
+   * Lifecycle hook called upon component initialization.
+   * Fetches the package data based on the ID from the route parameters.
    */
   ngOnInit(): void {
-    const id: number = isNaN(+this.route.snapshot.params['id'])
-      ? 0 // Default value or error handling
-      : +this.route.snapshot.params['id'];
+    const id: number = this.extractPackageIdFromRoute();
 
-    this.packageService.getPackageById(id).subscribe((data) => {
-      this.package = data;
-
-      // Initialize packageData if not defined
-      if (!this.package.packageData) {
-        this.package.packageData = {
-          packageDataId: 0,
-          description: '',
-          viaDestination: '',
-          date: '',
-          availableSeat: 0,
-          packageImages: [],
-        };
+    this.packageService.getPackageById(id).subscribe(
+      (data) => this.initializePackageData(data),
+      (error) => {
+        console.error('Failed to fetch package data:', error);
+        alert('Error fetching package data.');
       }
+    );
+  }
 
+  /**
+   * Extracts the package ID from the route parameters.
+   * Returns 0 if the ID is not a valid number.
+   */
+  private extractPackageIdFromRoute(): number {
+    const idParam = this.route.snapshot.params['id'];
+    return isNaN(+idParam) ? 0 : +idParam;
+  }
 
-      // Format the date to 'yyyy-MM-dd' for the input field
-      if (this.package.packageData.date) {
-        const localDate = new Date(this.package.packageData.date);
-        const year = localDate.getFullYear();
-        const month = String(localDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-        const day = String(localDate.getDate()).padStart(2, '0');
-        this.package.packageData.date = `${year}-${month}-${day}`; // Format as yyyy-MM-dd
-      }
-      
-      // if (this.package.packageData.date) {
-      //   this.package.packageData.date = new Date(this.package.packageData.date)
-      //     .toISOString()
-      //     .split('T')[0];
-      // }
+  /**
+   * Initializes the package data and prepares it for editing.
+   * Ensures proper structure and formatting for all fields.
+   */
+  private initializePackageData(data: any): void {
+    this.package = data;
 
+    // Initialize packageData with default values if undefined
+    this.package.packageData = this.package.packageData || {
+      packageDataId: 0,
+      description: '',
+      viaDestination: '',
+      date: '',
+      availableSeat: 0,
+      packageImages: [],
+    };
 
+    // Format date for the input field (yyyy-MM-dd)
+    if (this.package.packageData.date) {
+      this.package.packageData.date = this.formatDateForInput(this.package.packageData.date);
+    }
 
-      // Initialize packageImages array if undefined
-      if (!this.package.packageData.packageImages) {
-        this.package.packageData.packageImages = [];
-      }
+    // Initialize packageImages array if undefined
+    this.package.packageData.packageImages = this.package.packageData.packageImages || [];
 
-      // Transform packageImages for preview and file management
-      this.package.packageData.packageImages = this.package.packageData.packageImages.map((img: any) => ({
-        ...img,
-        url: img.filebytes ? 'data:image/jpeg;base64,' + img.filebytes : '',
-        imageFile: null, // Placeholder for new uploads
-      }));
-    });
+    // Enhance packageImages with additional properties for preview and uploads
+    this.package.packageData.packageImages = this.package.packageData.packageImages.map((img: any) => ({
+      ...img,
+      url: img.filebytes ? `data:image/jpeg;base64,${img.filebytes}` : '',
+      imageFile: null, // Placeholder for new file uploads
+    }));
+  }
+
+  /**
+   * Formats a date to 'yyyy-MM-dd' for use in date input fields.
+   */
+  private formatDateForInput(date: string | Date): string {
+    const localDate = new Date(date);
+    const year = localDate.getFullYear();
+    const month = String(localDate.getMonth() + 1).padStart(2, '0');
+    const day = String(localDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   /**
@@ -98,11 +112,7 @@ export class EditPackageComponent implements OnInit {
    * Adds a new slot for uploading an image.
    */
   addNewImageSlot(): void {
-    if (!this.package.packageData.packageImages) {
-      this.package.packageData.packageImages = []; // Initialize array if not defined
-    }
-
-    // Add a new image slot with default properties
+    this.package.packageData.packageImages = this.package.packageData.packageImages || [];
     this.package.packageData.packageImages.push({
       packageImageId: null,
       filename: '',
@@ -123,7 +133,7 @@ export class EditPackageComponent implements OnInit {
 
   /**
    * Submits the form data to update the package.
-   * Collects form data, prepares it for submission, and sends it to the service.
+   * Prepares form data for submission and sends it to the service.
    */
   onSubmit(): void {
     if (!this.package?.packageId) {
@@ -131,51 +141,9 @@ export class EditPackageComponent implements OnInit {
       return;
     }
 
-    const formData = new FormData();
+    const formData = this.prepareFormData();
 
-    // Append basic package fields
-    formData.append('packageId', this.package.packageId.toString());
-    formData.append('packageName', this.package.packageName);
-    formData.append('destination', this.package.destination);
-    formData.append('price', this.package.price.toString());
-    formData.append('dateCreated', this.package.dateCreated);
-
-    // Append packageData fields
-    if (this.package.packageData) {
-      formData.append('packageData.packageDataId', this.package.packageData.packageDataId.toString());
-      formData.append('packageData.description', this.package.packageData.description);
-      formData.append('packageData.viaDestination', this.package.packageData.viaDestination);
-      formData.append('packageData.date', this.package.packageData.date);
-      formData.append('packageData.availableSeat', this.package.packageData.availableSeat.toString());
-    }
-
-    // Append packageImages
-    if (this.package.packageData?.packageImages) {
-      this.package.packageData.packageImages.forEach((image: any, index: number) => {
-        if (image.imageFile) {
-          // Append the image file for upload
-          formData.append(`packageData.packageImages[${index}].imageFile`, image.imageFile, image.filename || `image_${index}`);
-        }
-
-        // Include existing packageImageId for tracking (if available)
-        if (image.packageImageId) {
-          formData.append(`packageData.packageImages[${index}].packageImageId`, image.packageImageId.toString());
-        }
-
-        // Append additional metadata
-        formData.append(`packageData.packageImages[${index}].filename`, image.filename || '');
-        formData.append(`packageData.packageImages[${index}].filetype`, image.filetype || '');
-        formData.append(`packageData.packageImages[${index}].filesize`, image.filesize || '');
-      });
-    }
-
-    // Debug: Log FormData keys and values
-    for (const [key, value] of (formData as any).entries()) {
-      console.log(key, value);
-    }
-
-    // Call the service to update the package
-    this.packageService.updatePackage(this.package?.packageId, formData).subscribe(
+    this.packageService.updatePackage(this.package.packageId, formData).subscribe(
       () => {
         alert('Package updated successfully!');
         this.router.navigate(['/packages']);
@@ -186,7 +154,48 @@ export class EditPackageComponent implements OnInit {
       }
     );
   }
+
+  /**
+   * Prepares a FormData object for submitting package updates.
+   */
+  private prepareFormData(): FormData {
+    const formData = new FormData();
+
+    // Add basic package fields
+    formData.append('packageId', this.package.packageId.toString());
+    formData.append('packageName', this.package.packageName);
+    formData.append('destination', this.package.destination);
+    formData.append('price', this.package.price.toString());
+    formData.append('dateCreated', this.package.dateCreated);
+
+    // Add packageData fields
+    if (this.package.packageData) {
+      formData.append('packageData.packageDataId', this.package.packageData.packageDataId.toString());
+      formData.append('packageData.description', this.package.packageData.description);
+      formData.append('packageData.viaDestination', this.package.packageData.viaDestination);
+      formData.append('packageData.date', this.package.packageData.date);
+      formData.append('packageData.availableSeat', this.package.packageData.availableSeat.toString());
+    }
+
+    // Add packageImages
+    if (this.package.packageData?.packageImages) {
+      this.package.packageData.packageImages.forEach((image: any, index: number) => {
+        if (image.imageFile) {
+          formData.append(`packageData.packageImages[${index}].imageFile`, image.imageFile, image.filename || `image_${index}`);
+        }
+        if (image.packageImageId) {
+          formData.append(`packageData.packageImages[${index}].packageImageId`, image.packageImageId.toString());
+        }
+        formData.append(`packageData.packageImages[${index}].filename`, image.filename || '');
+        formData.append(`packageData.packageImages[${index}].filetype`, image.filetype || '');
+        formData.append(`packageData.packageImages[${index}].filesize`, image.filesize || '');
+      });
+    }
+
+    return formData;
+  }
 }
+
 
 
 
