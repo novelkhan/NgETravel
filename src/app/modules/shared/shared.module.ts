@@ -27,7 +27,9 @@ import { RouterModule } from '@angular/router';
     ReactiveFormsModule,
     HttpClientModule,
     ValidationMessagesComponent,
-    UserHasRoleDirective
+    UserHasRoleDirective,
+    NotificationComponent,
+    ExpiringSessionCountdownComponent
   ]
 })
 export class SharedModule { }

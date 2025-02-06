@@ -12,7 +12,7 @@ import { SharedService } from './modules/shared/services/shared.service';
 export class AppComponent implements OnInit {
 
   constructor(private accountService: AccountService,
-    private sharedService: SharedService) {}
+    public sharedService: SharedService) {}
 
   ngOnInit(): void {
     this.refreshUser();

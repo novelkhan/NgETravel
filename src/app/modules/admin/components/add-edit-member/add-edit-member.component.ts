@@ -104,16 +104,45 @@ export class AddEditMemberComponent implements OnInit {
     this.memberForm.controls['roles'].setValue(roles.join(','));
   }
 
+  // submit() {
+  //   this.submitted = true;
+  //   this.errorMessages = [];
+
+
+  //   if (this.memberForm.valid) {
+  //     this.adminService.addEditMember(this.memberForm.value).subscribe({
+  //       next: (response: any) => {
+  //         this.sharedService.showNotification(true, response.value.title, response.value.message);
+  //         this.router.navigateByUrl('/admin');
+  //       },
+  //       error: error => {
+  //         if (error.error.errors) {
+  //           this.errorMessages = error.error.errors;
+  //         } else {
+  //           this.errorMessages.push(error.error);
+  //         }
+  //       }
+  //     })
+  //   }
+  // }
+
+
   submit() {
     this.submitted = true;
     this.errorMessages = [];
-
-
+  
     if (this.memberForm.valid) {
       this.adminService.addEditMember(this.memberForm.value).subscribe({
         next: (response: any) => {
-          this.sharedService.showNotification(true, response.value.titile, response.value.message);
-          this.router.navigateByUrl('/admin');
+          this.sharedService.showNotification(
+            true,
+            response.value.title,
+            response.value.message,
+            () => {
+              // Callback function: Redirect to the admin page after the modal is closed
+              this.router.navigateByUrl('/admin');
+            }
+          );
         },
         error: error => {
           if (error.error.errors) {
@@ -122,7 +151,7 @@ export class AddEditMemberComponent implements OnInit {
             this.errorMessages.push(error.error);
           }
         }
-      })
+      });
     }
   }
 }

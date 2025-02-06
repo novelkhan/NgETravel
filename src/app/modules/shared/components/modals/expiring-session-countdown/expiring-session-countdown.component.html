@@ -1,14 +1,19 @@
-<div class="modal-overlay">
-    <div class="modal-container warning">
-      <div class="modal-header">
-        <h3>Session Timeout Warning</h3>
+<div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title">Session Timeout Warning</h5>
       </div>
       <div class="modal-body">
-        <p>Your session is about to time out. Time remaining: {{ displayTime }}</p>
+        <p style="font-size: 1.5rem;">
+          Your session is about to time out, do you want to continue your session?
+          {{ displayTime }} time left
+        </p>
       </div>
       <div class="modal-footer">
-        <button (click)="logout()">Logout</button>
-        <button (click)="resumeSession()">Stay Logged In</button>
+        <button class="btn btn-danger" (click)="logout()">Logout</button>
+        <button class="btn btn-success" (click)="resumeSession()">Stay Logged In</button>
       </div>
     </div>
   </div>
+</div>
