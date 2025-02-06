@@ -1,8 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { SharedService } from '../../../services/shared.service';
-import { AccountService } from 'src/app/modules/account/services/account.service';
-import { BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-expiring-session-countdown',
@@ -10,46 +8,44 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
   styleUrls: ['./expiring-session-countdown.component.scss']
 })
 export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
-  modalRef?: BsModalRef;
-  targetTime: number = 120 // Countdown time in seconds
-  remainingTime: number = this.targetTime;
-  displayTime: string = this.formatTime(this.remainingTime);
-  countdownSubscription: Subscription | undefined;
+  @Input() targetTime: number = 120;
+  remainingTime: number = 0;
+  displayTime: string = '';
+  private countdownSubscription?: Subscription;
 
-  constructor(private sharedSerivce: SharedService,
-    private accountService: AccountService,
-    private bsModalRef: BsModalRef) {}
+  constructor(private sharedService: SharedService) {}
 
   ngOnInit(): void {
-    this.startCountDown();
+    this.remainingTime = this.targetTime;
+    this.updateDisplayTime();
+    this.startCountdown();
   }
+
   ngOnDestroy(): void {
     this.stopCountdown();
   }
 
-  startCountDown() {
+  private startCountdown() {
     this.countdownSubscription = interval(1000).subscribe(() => {
       if (this.remainingTime > 0) {
         this.remainingTime--;
-        this.displayTime = this.formatTime(this.remainingTime);
+        this.updateDisplayTime();
       } else {
         this.stopCountdown();
-        this.sharedSerivce.showNotification(false, 'Logged Out', 'You have been logged out due to inactivity');
-        this.logout();
+        this.sharedService.closeSessionCountdown();
+        alert('You have been logged out due to inactivity.');
       }
-    })
+    });
   }
 
   private stopCountdown() {
-    if (this.countdownSubscription) {
-      this.countdownSubscription.unsubscribe();
-    }
+    this.countdownSubscription?.unsubscribe();
   }
 
-  private formatTime(seconds: number): string {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${this.pad(minutes)}:${this.pad(remainingSeconds)}`;
+  private updateDisplayTime() {
+    const minutes = Math.floor(this.remainingTime / 60);
+    const seconds = this.remainingTime % 60;
+    this.displayTime = `${this.pad(minutes)}:${this.pad(seconds)}`;
   }
 
   private pad(value: number): string {
@@ -57,13 +53,12 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.bsModalRef.hide();
-    this.accountService.logout();
+    this.sharedService.closeSessionCountdown();
+    alert('You have been logged out.');
   }
 
   resumeSession() {
-    this.bsModalRef.hide();
-    this.accountService.refreshToken();
+    this.sharedService.closeSessionCountdown();
+    alert('Session resumed.');
   }
-
 }

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { SharedService } from '../../../services/shared.service';
 
 @Component({
   selector: 'app-notification',
@@ -7,9 +7,13 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
   styleUrls: ['./notification.component.scss']
 })
 export class NotificationComponent {
-  isSuccess: boolean = true;
-  title: string = '';
-  message: string = '';
+  @Input() isSuccess: boolean = true;
+  @Input() title: string = '';
+  @Input() message: string = '';
 
-  constructor (public bsModalRef: BsModalRef) {}
+  constructor(private sharedService: SharedService) {}
+
+  close() {
+    this.sharedService.closeNotification();
+  }
 }
