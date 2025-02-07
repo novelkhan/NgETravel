@@ -26,40 +26,21 @@ export class AccountService {
     private router: Router,
     private sharedService: SharedService) { }
 
-  // refreshToken = async () => {
-  //   this.http.post<User>(`${environment.apiUrl}/api/account/refresh-token`, {}, {withCredentials: true})
-  //   .subscribe({
-  //     next: (user: User) => {
-  //       if (user) {
-  //         this.setUser(user);
-  //       }
-  //     }, error: error => {
-  //       this.sharedService.showNotification(false, 'Error', error.error);
-  //       this.logout();
-  //     }
-  //   })
-  // }
 
-  refreshToken = () => {
-    return new Promise<void>((resolve, reject) => {
-      this.http.post<User>(`${environment.apiUrl}/api/account/refresh-token`, {}, { withCredentials: true })
-        .subscribe({
-          next: (user: User) => {
-            if (user) {
-              this.setUser(user); // Update the user state
-              resolve();
-            } else {
-              reject('No user data received');
-            }
-          },
-          error: (error) => {
-            this.sharedService.showNotification(false, 'Error', error.error);
-            this.logout(); // Log the user out if the token refresh fails
-            reject(error);
-          }
-        });
-    });
-  };
+
+  refreshToken = async () => {
+    this.http.post<User>(`${environment.apiUrl}/api/account/refresh-token`, {}, {withCredentials: true})
+    .subscribe({
+      next: (user: User) => {
+        if (user) {
+          this.setUser(user);
+        }
+      }, error: error => {
+        this.sharedService.showNotification(false, 'Error', error.error);
+        this.logout();
+      }
+    })
+  }
 
 
 
@@ -144,7 +125,7 @@ export class AccountService {
               this.sharedService.displayingExpiringSessionModal = true;
               this.sharedService.openExpiringSessionCountdown();
               // in 10 minutes of user incativity
-            }, 10 * 1000);
+            }, 15 * 1000);
           }
         }
       }

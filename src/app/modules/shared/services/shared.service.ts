@@ -9,7 +9,9 @@ export class SharedService {
   private notificationSubject = new Subject<{ isSuccess: boolean, title: string, message: string, callback?: () => void }>();
   notification$ = this.notificationSubject.asObservable();
 
-  //displayingExpiringSessionModal = false;
+  // Add a Subject to emit when the modal is opened
+  private modalOpenedSubject = new Subject<void>();
+  modalOpened$ = this.modalOpenedSubject.asObservable();
 
   constructor() {}
 
@@ -33,6 +35,8 @@ export class SharedService {
       modalElement.classList.add('show');
       modalElement.style.display = 'block';
       document.body.classList.add('modal-open');
+      // Emit the modalOpened event
+      this.modalOpenedSubject.next();
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { AccountService } from 'src/app/modules/account/services/account.service';
 import { SharedService } from 'src/app/modules/shared/services/shared.service';
@@ -9,7 +9,7 @@ import { SharedService } from 'src/app/modules/shared/services/shared.service';
   styleUrls: ['./expiring-session-countdown.component.scss']
 })
 export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
-  targetTime: number = 50; // Countdown time in seconds
+  targetTime: number = 20; // Countdown time in seconds
   remainingTime: number = this.targetTime;
   displayTime: string = this.formatTime(this.remainingTime);
   countdownSubscription: Subscription | undefined;
@@ -20,11 +20,20 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.startCountDown();
+    // Subscribe to the modalOpened$ Subject
+    this.sharedService.modalOpened$.subscribe(() => {
+      this.resetCountdown(); // Reset the countdown before starting
+      this.startCountDown();
+    });
   }
 
   ngOnDestroy(): void {
     this.stopCountdown();
+  }
+
+  resetCountdown() {
+    this.remainingTime = this.targetTime; // Reset remainingTime to targetTime
+    this.displayTime = this.formatTime(this.remainingTime); // Update displayTime
   }
 
   startCountDown() {
@@ -37,7 +46,7 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
         this.sharedService.showNotification(false, 'Logged Out', 'You have been logged out due to inactivity');
         this.logout();
       }
-    })
+    });
   }
 
   private stopCountdown() {
@@ -60,7 +69,6 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
     this.closeModal();
     this.accountService.logout();
   }
-  
 
   closeModal() {
     const modalElement = document.getElementById('sessionModal');
@@ -71,26 +79,8 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
-  /* resumeSession() {
-    this.closeModal();
-    this.accountService.refreshToken();
-  } */
-
-
   resumeSession() {
     this.closeModal();
-    this.accountService.refreshToken()
-      .then(() => {
-        // Reset the countdown after refreshing the token
-        this.remainingTime = this.targetTime;
-        this.displayTime = this.formatTime(this.remainingTime);
-        this.startCountDown();
-      })
-      .catch((error) => {
-        console.error('Failed to refresh token:', error);
-        this.accountService.logout(); // Log the user out if the token refresh fails
-      });
+    this.accountService.refreshToken();
   }
 }
