@@ -125,7 +125,7 @@ export class AccountService {
               this.sharedService.displayingExpiringSessionModal = true;
               this.sharedService.openExpiringSessionCountdown();
               // in 10 minutes of user incativity
-            }, 15 * 1000);
+            }, 10 * 1000);
           }
         }
       }
