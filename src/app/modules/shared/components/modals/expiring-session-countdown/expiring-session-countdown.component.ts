@@ -9,7 +9,7 @@ import { SharedService } from 'src/app/modules/shared/services/shared.service';
   styleUrls: ['./expiring-session-countdown.component.scss']
 })
 export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
-  targetTime: number = 5; // Countdown time in seconds
+  targetTime: number = 5; // Default countdown time in seconds
   remainingTime: number = this.targetTime;
   displayTime: string = this.formatTime(this.remainingTime);
   countdownSubscription: Subscription | undefined;
@@ -21,8 +21,9 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Subscribe to the modalOpened$ Subject
-    this.sharedService.modalOpened$.subscribe(() => {
-      this.resetCountdown(); // Reset the countdown
+    this.sharedService.modalOpened$.subscribe((targetTime: number) => {
+      this.targetTime = targetTime; // Update targetTime
+      this.resetCountdown(); // Reset the countdown with the new targetTime
       this.startCountDown(); // Start the countdown
     });
   }
@@ -33,7 +34,7 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
 
   resetCountdown() {
     this.stopCountdown(); // Stop the existing countdown
-    this.remainingTime = this.targetTime; // Reset remainingTime to targetTime
+    this.remainingTime = this.targetTime; // Reset remainingTime to the updated targetTime
     this.displayTime = this.formatTime(this.remainingTime); // Update displayTime
   }
 

@@ -10,7 +10,7 @@ export class SharedService {
   notification$ = this.notificationSubject.asObservable();
 
   // Add a Subject to emit when the modal is opened
-  private modalOpenedSubject = new Subject<void>();
+  private modalOpenedSubject = new Subject<number>();
   modalOpened$ = this.modalOpenedSubject.asObservable();
 
   constructor() {}
@@ -29,14 +29,14 @@ export class SharedService {
     }
   }
 
-  openExpiringSessionCountdown() {
+  openExpiringSessionCountdown(targetTime: number = 5) {
     const modalElement = document.getElementById('sessionModal');
     if (modalElement) {
       modalElement.classList.add('show');
       modalElement.style.display = 'block';
       document.body.classList.add('modal-open');
-      // Emit the modalOpened event
-      this.modalOpenedSubject.next();
+      // Emit the modalOpened event with targetTime
+      this.modalOpenedSubject.next(targetTime);
     }
   }
 }

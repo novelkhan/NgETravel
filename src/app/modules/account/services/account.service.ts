@@ -123,7 +123,7 @@ export class AccountService {
           if (!this.sharedService.displayingExpiringSessionModal) {
             this.timeoutId = setTimeout(() => {
               this.sharedService.displayingExpiringSessionModal = true;
-              this.sharedService.openExpiringSessionCountdown();
+              this.sharedService.openExpiringSessionCountdown(15);
               // in 10 minutes of user incativity
             }, 10 * 1000);
           }
