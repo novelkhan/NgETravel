@@ -22,8 +22,8 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Subscribe to the modalOpened$ Subject
     this.sharedService.modalOpened$.subscribe((targetTime: number) => {
-      this.targetTime = targetTime; // Update targetTime
-      this.resetCountdown(); // Reset the countdown with the new targetTime
+      this.targetTime = targetTime; // Set the targetTime
+      this.resetCountdown(); // Reset the countdown
       this.startCountDown(); // Start the countdown
     });
   }
@@ -34,7 +34,7 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
 
   resetCountdown() {
     this.stopCountdown(); // Stop the existing countdown
-    this.remainingTime = this.targetTime; // Reset remainingTime to the updated targetTime
+    this.remainingTime = this.targetTime; // Reset remainingTime to targetTime
     this.displayTime = this.formatTime(this.remainingTime); // Update displayTime
   }
 
