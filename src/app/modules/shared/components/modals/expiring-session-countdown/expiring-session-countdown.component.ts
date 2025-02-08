@@ -9,7 +9,7 @@ import { SharedService } from 'src/app/modules/shared/services/shared.service';
   styleUrls: ['./expiring-session-countdown.component.scss']
 })
 export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
-  targetTime: number = 20; // Countdown time in seconds
+  targetTime: number = 5; // Countdown time in seconds
   remainingTime: number = this.targetTime;
   displayTime: string = this.formatTime(this.remainingTime);
   countdownSubscription: Subscription | undefined;
@@ -83,6 +83,8 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
   }
 
   resumeSession() {
+    this.stopCountdown(); // Stop the current countdown
+    this.resetCountdown(); // Reset the countdown
     this.closeModal();
     this.accountService.refreshToken();
   }
