@@ -1,8 +1,7 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MemberView } from 'src/app/modules/shared/models/admin/memberView.model';
 import { AdminService } from '../../services/admin.service';
 import { SharedService } from 'src/app/modules/shared/services/shared.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-admin',
@@ -12,11 +11,11 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 export class AdminComponent implements OnInit {
   members: MemberView[] = [];
   memberToDelete: MemberView | undefined;
-  modalRef?: BsModalRef;
 
-  constructor(private adminService: AdminService,
-    private sharedService: SharedService,
-    private modalService: BsModalService) {}
+  constructor(
+    private adminService: AdminService,
+    private sharedService: SharedService
+  ) {}
 
   ngOnInit(): void {
     this.adminService.getMembers().subscribe({
@@ -29,7 +28,7 @@ export class AdminComponent implements OnInit {
       next: _ => {
         this.handleLockUnlockFilterAndMessage(id, true);
       }
-    })
+    });
   }
 
   unlockMember(id: string) {
@@ -37,42 +36,55 @@ export class AdminComponent implements OnInit {
       next: _ => {
         this.handleLockUnlockFilterAndMessage(id, false);
       }
-    })
+    });
   }
 
-  deleteMember(id: string, template: TemplateRef<any>) {
-    let member = this.findMember(id);
+  deleteMember(id: string) {
+    const member = this.findMember(id);
     if (member) {
       this.memberToDelete = member;
-      this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
+      // Bootstrap 5 modal programmatically show করার জন্য
+      const modalElement = document.getElementById('deleteModal');
+      if (modalElement) {
+        const modal = new (window as any).bootstrap.Modal(modalElement);
+        modal.show();
+      }
     }
   }
 
   confirm() {
-    if(this.memberToDelete) {
+    if (this.memberToDelete) {
       this.adminService.deleteMember(this.memberToDelete.id).subscribe({
         next: _ => {
           this.sharedService.showNotification(true, 'Deleted', `Member of ${this.memberToDelete?.userName} has been deleted!`);
           this.members = this.members.filter(x => x.id !== this.memberToDelete?.id);
           this.memberToDelete = undefined;
-          this.modalRef?.hide();
+          // Modal hide করার জন্য
+          const modalElement = document.getElementById('deleteModal');
+          if (modalElement) {
+            const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
+            modal.hide();
+          }
         }
-      })
+      });
     }
   }
 
   decline() {
     this.memberToDelete = undefined;
-    this.modalRef?.hide();
+    // Modal hide করার জন্য
+    const modalElement = document.getElementById('deleteModal');
+    if (modalElement) {
+      const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
+      modal.hide();
+    }
   }
 
   private handleLockUnlockFilterAndMessage(id: string, locking: boolean) {
-    let member = this.findMember(id);
-
+    const member = this.findMember(id);
     if (member) {
       member.isLocked = !member.isLocked;
-
-      if (locking) { 
+      if (locking) {
         this.sharedService.showNotification(true, 'Locked', `${member.userName} member has been locked`);
       } else {
         this.sharedService.showNotification(true, 'Unlocked', `${member.userName} member has been unlocked`);
@@ -81,11 +93,6 @@ export class AdminComponent implements OnInit {
   }
 
   private findMember(id: string): MemberView | undefined {
-    let member = this.members.find(x => x.id === id);
-    if (member) {
-      return member;
-    }
-
-    return undefined;
+    return this.members.find(x => x.id === id);
   }
 }

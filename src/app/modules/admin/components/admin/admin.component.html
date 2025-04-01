@@ -41,7 +41,7 @@
                 <button class="btn btn-primary btn-sm me-2" routerLink="/admin/add-edit-member/{{member.id}}">
                     Edit
                 </button>
-                <button class="btn btn-danger btn-sm" (click)="deleteMember(member.id, template)">
+                <button class="btn btn-danger btn-sm" (click)="deleteMember(member.id)">
                     Delete
                 </button>
             </td>
@@ -49,10 +49,15 @@
     </tbody>
 </table>
 
-<ng-template #template>
-    <div class="modal-body text-center">
-        <p>Are you sure you want to delete {{memberToDelete?.userName}}?</p>
-        <button type="button" class="btn btn-default" (click)="confirm()">Yes</button>
-        <button type="button" class="btn btn-primary" (click)="decline()">No</button>
+<!-- Bootstrap 5 Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <p>Are you sure you want to delete {{memberToDelete?.userName}}?</p>
+                <button type="button" class="btn btn-default" (click)="confirm()">Yes</button>
+                <button type="button" class="btn btn-primary" (click)="decline()">No</button>
+            </div>
+        </div>
     </div>
-</ng-template>
+</div>
