@@ -5,5 +5,6 @@ export interface MemberView {
     lastName: string;
     dateCreated: Date;
     isLocked: boolean;
+    isEmailConfirmed: boolean;
     roles: string[];
 }

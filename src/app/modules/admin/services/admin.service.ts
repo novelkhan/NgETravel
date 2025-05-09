@@ -35,6 +35,14 @@ export class AdminService {
     return this.http.put(`${environment.apiUrl}/api/admin/unlock-member/${id}`, {});
   }
 
+  unConfirmEmail(id: string) {
+    return this.http.put(`${environment.apiUrl}/api/admin/unConfirmEmail/${id}`, {});
+  }
+
+  confirmEmail(id: string) {
+    return this.http.put(`${environment.apiUrl}/api/admin/confirmEmail/${id}`, {});
+  }
+
   deleteMember(id: string) {
     return this.http.delete(`${environment.apiUrl}/api/admin/delete-member/${id}`, {});
   }

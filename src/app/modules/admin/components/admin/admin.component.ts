@@ -39,6 +39,26 @@ export class AdminComponent implements OnInit {
     });
   }
 
+
+
+  unconfirmMember(id: string) {
+    this.adminService.unConfirmEmail(id).subscribe({
+      next: _ => {
+        this.handleEmailConfirmFilterAndMessage(id, false);
+      }
+    });
+  }
+
+  confirmMember(id: string) {
+    this.adminService.confirmEmail(id).subscribe({
+      next: _ => {
+        this.handleEmailConfirmFilterAndMessage(id, true);
+      }
+    });
+  }
+
+
+
   deleteMember(id: string) {
     const member = this.findMember(id);
     if (member) {
@@ -91,6 +111,20 @@ export class AdminComponent implements OnInit {
       }
     }
   }
+
+
+  private handleEmailConfirmFilterAndMessage(id: string, confirming: boolean) {
+    const member = this.findMember(id);
+    if (member) {
+      member.isEmailConfirmed = !member.isEmailConfirmed;
+      if (confirming) {
+        this.sharedService.showNotification(true, 'Email Confirmed', `${member.userName} member has been email comfirmed`);
+      } else {
+        this.sharedService.showNotification(false, 'Email Unconfirmed', `${member.userName} member has been email unconfirmed`);
+      }
+    }
+  }
+
 
   private findMember(id: string): MemberView | undefined {
     return this.members.find(x => x.id === id);

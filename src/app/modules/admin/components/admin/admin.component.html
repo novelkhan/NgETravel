@@ -9,6 +9,7 @@
             <th>First name</th>
             <th>Last name</th>
             <th>Date created</th>
+            <th>IsEmailConfirmed</th>
             <th>Roles</th>
             <th class="text-center">Lock / Unlock</th>
             <th class="text-center">Edit / Delete</th>
@@ -24,6 +25,14 @@
             <td>{{member.firstName | titlecase}}</td>
             <td>{{member.lastName | titlecase}}</td>
             <td>{{member.dateCreated | date}}</td>
+            <td class="text-center">
+                <p *ngIf="member.isEmailConfirmed" class="text-primary">
+                    Yes
+                </p>
+                <p *ngIf="!member.isEmailConfirmed" class="text-danger">
+                    No
+                </p>
+            </td>
             <td>
                 <span *ngFor="let role of member.roles; let i = index">
                     {{role}}<span *ngIf="i + 1 < member.roles.length">, </span>
@@ -38,7 +47,13 @@
                 </a>
             </td>
             <td class="text-center">
-                <button class="btn btn-primary btn-sm me-2" routerLink="/admin/add-edit-member/{{member.id}}">
+                <a class="btn btn-warning btn-sm me-4" *ngIf="!member.isEmailConfirmed" (click)="confirmMember(member.id)">
+                    Confirm
+                </a>
+                <a class="btn btn-success btn-sm" *ngIf="member.isEmailConfirmed" (click)="unconfirmMember(member.id)">
+                    Un-Confirm
+                </a>
+                <button class="btn btn-primary btn-sm ms-2 me-2" routerLink="/admin/add-edit-member/{{member.id}}">
                     Edit
                 </button>
                 <button class="btn btn-danger btn-sm" (click)="deleteMember(member.id)">
