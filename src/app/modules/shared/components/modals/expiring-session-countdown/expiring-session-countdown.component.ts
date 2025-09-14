@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { AccountService } from 'src/app/modules/account/services/account.service';
 import { SharedService } from 'src/app/modules/shared/services/shared.service';
+import { environment } from 'src/environments/environment.development';
 
 @Component({
   selector: 'app-expiring-session-countdown',
@@ -9,7 +10,7 @@ import { SharedService } from 'src/app/modules/shared/services/shared.service';
   styleUrls: ['./expiring-session-countdown.component.scss']
 })
 export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
-  targetTime: number = 5; // Default countdown time in seconds
+  targetTime: number = environment.countdownDurationInSeconds; // ← environment থেকে ভ্যালু
   remainingTime: number = this.targetTime;
   displayTime: string = this.formatTime(this.remainingTime);
   countdownSubscription: Subscription | undefined;
