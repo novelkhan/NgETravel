@@ -3,6 +3,7 @@ import { interval, Subscription } from 'rxjs';
 import { AccountService } from 'src/app/modules/account/services/account.service';
 import { SharedService } from 'src/app/modules/shared/services/shared.service';
 import { environment } from 'src/environments/environment.development';
+import { User } from '../../../models/account/user.model';
 
 @Component({
   selector: 'app-expiring-session-countdown',
@@ -14,6 +15,7 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
   remainingTime: number = this.targetTime;
   displayTime: string = this.formatTime(this.remainingTime);
   countdownSubscription: Subscription | undefined;
+  private userSubscription: Subscription | undefined; // নতুন: user চেকের জন্য
 
   constructor(
     private accountService: AccountService,
@@ -21,15 +23,32 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // নতুন: user$ subscribe করে চেক করুন যে user null হলে কাউন্টডাউন থামান
+    this.userSubscription = this.accountService.user$.subscribe((user: User | null) => {
+      if (!user) {
+        this.stopCountdown();
+        this.closeModal();
+      }
+    });
+
+    // বিদ্যমান modalOpened$ subscribe
     this.sharedService.modalOpened$.subscribe((targetTime: number) => {
       this.targetTime = targetTime;
-      this.resetCountdown();
-      this.startCountDown();
+      if (targetTime > 0) { // যদি 0 হয় (close signal), কাউন্টডাউন না শুরু করুন
+        this.resetCountdown();
+        this.startCountDown();
+      } else {
+        this.stopCountdown();
+        this.closeModal();
+      }
     });
   }
 
   ngOnDestroy(): void {
     this.stopCountdown();
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   resetCountdown() {
@@ -72,8 +91,10 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
 
   logout(isManualLogout: boolean = false) {
     this.closeModal();
+    this.stopCountdown(); // ইতিমধ্যে আছে, কিন্তু নিশ্চিত করার জন্য
     this.accountService.logout(isManualLogout);
-    this.stopCountdown();
+    // অতিরিক্ত: shared service দিয়ে modal close
+    this.sharedService.closeExpiringSessionModal();
   }
 
   closeModal() {

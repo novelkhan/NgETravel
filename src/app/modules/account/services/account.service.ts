@@ -76,12 +76,22 @@ export class AccountService {
  
 
   logout(isManualLogout: boolean = false) {
-    localStorage.removeItem(environment.userKey);
-    this.userSource.next(null);
-    this.router.navigateByUrl('/');
-    this.stopRefreshTokenTimer();
-    // নোটিফিকেশন এখানে দেখানো হবে না, এটি ExpiringSessionCountdownComponent বা অন্য জায়গায় নিয়ন্ত্রণ করা হবে
+  localStorage.removeItem(environment.userKey);
+  this.userSource.next(null);
+  this.router.navigateByUrl('/');
+  this.stopRefreshTokenTimer();
+  
+  // বিদ্যমান idle timeout ক্লিয়ার করুন
+  if (this.timeoutId) {
+    clearTimeout(this.timeoutId);
+    this.timeoutId = null;
   }
+  
+  // যেকোনো খোলা session modal বন্ধ করুন
+  this.sharedService.closeExpiringSessionModal();
+  
+  // নোটিফিকেশন এখানে দেখানো হবে না, এটি ExpiringSessionCountdownComponent বা অন্য জায়গায় নিয়ন্ত্রণ করা হবে
+}
 
   register(model: Register) {
     return this.http.post(`${environment.apiUrl}/api/account/register`, model);
