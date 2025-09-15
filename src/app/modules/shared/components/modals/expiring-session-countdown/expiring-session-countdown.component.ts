@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment.development';
   styleUrls: ['./expiring-session-countdown.component.scss']
 })
 export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
-  targetTime: number = environment.countdownDurationInSeconds; // ← environment থেকে ভ্যালু
+  targetTime: number = environment.countdownDurationInSeconds;
   remainingTime: number = this.targetTime;
   displayTime: string = this.formatTime(this.remainingTime);
   countdownSubscription: Subscription | undefined;
@@ -21,42 +21,42 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Subscribe to the modalOpened$ Subject
     this.sharedService.modalOpened$.subscribe((targetTime: number) => {
-      this.targetTime = targetTime; // Set the targetTime
-      this.resetCountdown(); // Reset the countdown
-      this.startCountDown(); // Start the countdown
+      this.targetTime = targetTime;
+      this.resetCountdown();
+      this.startCountDown();
     });
   }
 
   ngOnDestroy(): void {
-    this.stopCountdown(); // Stop the countdown when the component is destroyed
+    this.stopCountdown();
   }
 
   resetCountdown() {
-    this.stopCountdown(); // Stop the existing countdown
-    this.remainingTime = this.targetTime; // Reset remainingTime to targetTime
-    this.displayTime = this.formatTime(this.remainingTime); // Update displayTime
+    this.stopCountdown();
+    this.remainingTime = this.targetTime;
+    this.displayTime = this.formatTime(this.remainingTime);
   }
 
   startCountDown() {
-    this.stopCountdown(); // Stop the existing countdown before starting a new one
+    this.stopCountdown();
     this.countdownSubscription = interval(1000).subscribe(() => {
       if (this.remainingTime > 0) {
         this.remainingTime--;
         this.displayTime = this.formatTime(this.remainingTime);
       } else {
         this.stopCountdown();
+        // ইন্যাকটিভিটির কারণে লগআউট, তাই নোটিফিকেশন দেখানো হবে
         this.sharedService.showNotification(false, 'Logged Out', 'You have been logged out due to inactivity');
-        this.logout();
+        this.logout(false); // isManualLogout = false
       }
     });
   }
 
   private stopCountdown() {
     if (this.countdownSubscription) {
-      this.countdownSubscription.unsubscribe(); // Unsubscribe to stop the countdown
-      this.countdownSubscription = undefined; // Reset the subscription
+      this.countdownSubscription.unsubscribe();
+      this.countdownSubscription = undefined;
     }
   }
 
@@ -70,9 +70,10 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
     return value < 10 ? `0${value}` : value.toString();
   }
 
-  logout() {
+  logout(isManualLogout: boolean = false) {
     this.closeModal();
-    this.accountService.logout();
+    this.accountService.logout(isManualLogout);
+    this.stopCountdown();
   }
 
   closeModal() {
@@ -85,8 +86,8 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
   }
 
   resumeSession() {
-    this.stopCountdown(); // Stop the current countdown
-    this.resetCountdown(); // Reset the countdown
+    this.stopCountdown();
+    this.resetCountdown();
     this.closeModal();
     this.accountService.refreshToken();
   }

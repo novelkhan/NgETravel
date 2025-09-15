@@ -75,11 +75,12 @@ export class AccountService {
 
  
 
-  logout() {
+  logout(isManualLogout: boolean = false) {
     localStorage.removeItem(environment.userKey);
     this.userSource.next(null);
     this.router.navigateByUrl('/');
     this.stopRefreshTokenTimer();
+    // নোটিফিকেশন এখানে দেখানো হবে না, এটি ExpiringSessionCountdownComponent বা অন্য জায়গায় নিয়ন্ত্রণ করা হবে
   }
 
   register(model: Register) {
