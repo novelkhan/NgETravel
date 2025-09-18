@@ -24,6 +24,7 @@ export class SharedService {
     if (modalElement) {
       modalElement.classList.add('show');
       modalElement.style.display = 'block';
+      modalElement.setAttribute('aria-hidden', 'false'); // ✅ FIX
       document.body.classList.add('modal-open');
     }
   }

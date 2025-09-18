@@ -105,7 +105,7 @@ export class AdminComponent implements OnInit {
     if (member) {
       member.isLocked = !member.isLocked;
       if (locking) {
-        this.sharedService.showNotification(true, 'Locked', `${member.userName} member has been locked`);
+        this.sharedService.showNotification(false, 'Locked', `${member.userName} member has been locked`);
       } else {
         this.sharedService.showNotification(true, 'Unlocked', `${member.userName} member has been unlocked`);
       }

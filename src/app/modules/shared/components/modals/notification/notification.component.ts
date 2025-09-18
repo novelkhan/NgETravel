@@ -28,9 +28,9 @@ export class NotificationComponent implements OnInit {
     if (modalElement) {
       modalElement.classList.remove('show');
       modalElement.style.display = 'none';
+      modalElement.setAttribute('aria-hidden', 'true'); // ✅ FIX
       document.body.classList.remove('modal-open');
 
-      // Execute the callback if it exists
       if (this.callback) {
         this.callback();
       }
