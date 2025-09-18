@@ -44,6 +44,10 @@ export class SharedService {
     this.displayingExpiringSessionModal = false;
     const modalElement = document.getElementById('sessionModal');
     if (modalElement) {
+      // ⚡ প্রথমে ফোকাস রিসেট করুন
+      (document.activeElement as HTMLElement)?.blur();
+      document.body.focus(); // ✅ Extra safe fallback
+
       modalElement.classList.remove('show');
       modalElement.style.display = 'none';
       modalElement.setAttribute('aria-hidden', 'true'); // ✅ FIX
