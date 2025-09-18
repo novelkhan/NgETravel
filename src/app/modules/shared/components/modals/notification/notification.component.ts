@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { SharedService } from 'src/app/modules/shared/services/shared.service';
 
 @Component({
@@ -6,21 +8,31 @@ import { SharedService } from 'src/app/modules/shared/services/shared.service';
   templateUrl: './notification.component.html',
   styleUrls: ['./notification.component.scss']
 })
-export class NotificationComponent implements OnInit {
+export class NotificationComponent implements OnInit, OnDestroy {
   isSuccess: boolean = true;
   title: string = '';
   message: string = '';
   private callback?: () => void;
 
+  // ✅ destroy signal
+  private destroy$ = new Subject<void>();
+
   constructor(private sharedService: SharedService) {}
 
   ngOnInit(): void {
-    this.sharedService.notification$.subscribe(notification => {
-      this.isSuccess = notification.isSuccess;
-      this.title = notification.title;
-      this.message = notification.message;
-      this.callback = notification.callback;
-    });
+    this.sharedService.notification$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(notification => {
+        this.isSuccess = notification.isSuccess;
+        this.title = notification.title;
+        this.message = notification.message;
+        this.callback = notification.callback;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();     // ✅ সাবস্ক্রিপশন বন্ধ
+    this.destroy$.complete();
   }
 
   closeModal() {
