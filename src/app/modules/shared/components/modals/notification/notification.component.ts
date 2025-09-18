@@ -26,8 +26,9 @@ export class NotificationComponent implements OnInit {
   closeModal() {
     const modalElement = document.getElementById('notificationModal');
     if (modalElement) {
-      // ⚡ প্রথমে focus বাইরে সরান
+      // ⚡ প্রথমে ফোকাস রিসেট করুন
       (document.activeElement as HTMLElement)?.blur();
+      document.body.focus(); // ✅ Extra safe fallback
 
       modalElement.classList.remove('show');
       modalElement.style.display = 'none';
