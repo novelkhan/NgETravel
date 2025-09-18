@@ -102,6 +102,7 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
     if (modalElement) {
       modalElement.classList.remove('show');
       modalElement.style.display = 'none';
+      modalElement.setAttribute('aria-hidden', 'true'); // ✅ FIX
       document.body.classList.remove('modal-open');
     }
   }

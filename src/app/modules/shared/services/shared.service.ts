@@ -34,22 +34,21 @@ export class SharedService {
     if (modalElement) {
       modalElement.classList.add('show');
       modalElement.style.display = 'block';
+      modalElement.setAttribute('aria-hidden', 'false'); // ✅ FIX
       document.body.classList.add('modal-open');
-      // Emit the modalOpened event with targetTime
       this.modalOpenedSubject.next(targetTime);
     }
   }
 
-  // নতুন মেথড: মডাল বন্ধ করার জন্য
   closeExpiringSessionModal() {
     this.displayingExpiringSessionModal = false;
     const modalElement = document.getElementById('sessionModal');
     if (modalElement) {
       modalElement.classList.remove('show');
       modalElement.style.display = 'none';
+      modalElement.setAttribute('aria-hidden', 'true'); // ✅ FIX
       document.body.classList.remove('modal-open');
     }
-    // Optional: Emit 0 to signal component to stop countdown
     this.modalOpenedSubject.next(0);
   }
 }
