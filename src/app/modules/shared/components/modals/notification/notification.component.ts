@@ -26,9 +26,12 @@ export class NotificationComponent implements OnInit {
   closeModal() {
     const modalElement = document.getElementById('notificationModal');
     if (modalElement) {
+      // ⚡ প্রথমে focus বাইরে সরান
+      (document.activeElement as HTMLElement)?.blur();
+
       modalElement.classList.remove('show');
       modalElement.style.display = 'none';
-      modalElement.setAttribute('aria-hidden', 'true'); // ✅ FIX
+      modalElement.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('modal-open');
 
       if (this.callback) {
