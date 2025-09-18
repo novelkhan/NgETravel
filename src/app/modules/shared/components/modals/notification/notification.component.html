@@ -1,15 +1,40 @@
-<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="false">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header" [ngClass]="{'bg-success': isSuccess, 'bg-danger': !isSuccess}">
-        <h5 class="modal-title">{{ title }}</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+<div
+  class="modal fade"
+  id="notificationModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="notificationModalLabel"
+  aria-describedby="notificationModalDesc"
+  aria-modal="true"
+  aria-hidden="false"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content shadow rounded-3">
+      <div
+        class="modal-header text-white"
+        [ngClass]="{ 'bg-success': isSuccess, 'bg-danger': !isSuccess }"
+      >
+        <h5 class="modal-title fw-bold" id="notificationModalLabel">
+          {{ title }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closeModal()"
+        ></button>
       </div>
-      <div class="modal-body">
-        {{ message }}
+      <div class="modal-body" id="notificationModalDesc">
+        <p class="fs-5">{{ message }}</p>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">OK</button>
+      <div class="modal-footer d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-secondary px-4"
+          (click)="closeModal()"
+        >
+          OK
+        </button>
       </div>
     </div>
   </div>

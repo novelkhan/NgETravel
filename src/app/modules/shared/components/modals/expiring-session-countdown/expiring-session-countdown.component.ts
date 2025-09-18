@@ -122,4 +122,15 @@ export class ExpiringSessionCountdownComponent implements OnInit, OnDestroy {
     this.closeModal();
     this.accountService.refreshToken();
   }
+
+  // ✅ modal auto-focus
+  ngAfterViewInit() {
+    const modalElement = document.getElementById('sessionModal');
+    if (modalElement) {
+      modalElement.addEventListener('shown.bs.modal', () => {
+        const focusBtn = document.getElementById('stayLoggedInBtn') as HTMLElement;
+        if (focusBtn) focusBtn.focus();
+      });
+    }
+  }
 }

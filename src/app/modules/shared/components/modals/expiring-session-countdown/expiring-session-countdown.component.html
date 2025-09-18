@@ -1,18 +1,45 @@
-<div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="false">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header bg-danger">
-        <h5 class="modal-title">Session Timeout Warning</h5>
+<div
+  class="modal fade"
+  id="sessionModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="sessionModalLabel"
+  aria-describedby="sessionModalDesc"
+  aria-modal="true"
+  aria-hidden="false"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content shadow-lg rounded-3">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title fw-bold" id="sessionModalLabel">
+          Session Timeout Warning
+        </h5>
       </div>
-      <div class="modal-body">
-        <p style="font-size: 1.5rem;">
-          Your session is about to time out, do you want to continue your session?
-          {{ displayTime }} time left
+      <div class="modal-body" id="sessionModalDesc">
+        <p class="fw-semibold fs-5 text-dark">
+          Your session is about to time out. Do you want to continue your
+          session?
+        </p>
+        <p class="fs-4 text-danger fw-bold text-center">
+          {{ displayTime }} left
         </p>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-danger" (click)="logout(true)">Logout</button>
-        <button class="btn btn-success" (click)="resumeSession()">Stay Logged In</button>
+      <div class="modal-footer d-flex justify-content-end gap-2">
+        <button
+          class="btn btn-danger px-4"
+          (click)="logout(true)"
+          aria-label="Logout immediately"
+        >
+          Logout
+        </button>
+        <button
+          class="btn btn-success px-4"
+          (click)="resumeSession()"
+          aria-label="Stay logged in"
+          id="stayLoggedInBtn"
+        >
+          Stay Logged In
+        </button>
       </div>
     </div>
   </div>
