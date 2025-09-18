@@ -24,7 +24,8 @@ export class AppComponent implements OnInit {
     this.accountService.user$.pipe(take(1)).subscribe({
       next: (user: User | null) => {
         if (user) {
-          clearTimeout(this.accountService.timeoutId);
+          // clearTimeout(this.accountService.timeoutId);
+          this.accountService.clearIdleTimeout();
           this.accountService.checkUserIdleTimout();
         }
       }
