@@ -31,7 +31,7 @@
                 <div class="form-floating mb-3">
                     <input formControlName="userName" type="text" placeholder="Username" class="form-control"
                         [class.is-invalid]="submitted && memberForm.get('userName')?.errors">
-                    <label for="userName">Username</label>
+                    <label for="userName">Email (As Username)</label>
                     <span class="text-danger" *ngIf="submitted && memberForm.get('userName')?.hasError('required')">
                         Username is required
                     </span>
