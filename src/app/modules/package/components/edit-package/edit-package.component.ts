@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PackageService } from '../../services/package.service';
+import { SharedService } from 'src/app/modules/shared/services/shared.service';
 
 @Component({
   selector: 'app-edit-package',
@@ -12,6 +13,7 @@ export class EditPackageComponent implements OnInit {
   package: any = null;
 
   constructor(
+    private sharedService: SharedService,
     private packageService: PackageService,
     private route: ActivatedRoute,
     private router: Router
@@ -145,12 +147,12 @@ export class EditPackageComponent implements OnInit {
 
     this.packageService.updatePackage(this.package.packageId, formData).subscribe(
       () => {
-        alert('Package updated successfully!');
+        this.sharedService.showNotification(true, 'Updated', 'Package updated successfully!');
         this.router.navigate(['/packages']);
       },
       (error) => {
         console.error('Failed to update package:', error);
-        alert('Error updating package.');
+        this.sharedService.showNotification(false, 'Error', 'Error updating package.');
       }
     );
   }

@@ -48,5 +48,4 @@ export class UserHasRoleDirective implements OnInit{
     })
 
   }
-
 }

@@ -6,12 +6,13 @@ import { PackagesComponent } from './components/packages/packages.component';
 import { EditPackageComponent } from './components/edit-package/edit-package.component';
 
 const routes: Routes = [
+  { path: '', component: PackagesComponent},
   {
     path: '',
     runGuardsAndResolvers: 'always',
     canActivate: [AdminGuard],
     children: [
-      { path: '', component: PackagesComponent},
+      //{ path: '', component: PackagesComponent},
       // path for adding a new package
       { path: 'add-package', component: AddPackageComponent},
       // path for editing existing package

@@ -16,6 +16,8 @@ import { AppComponent } from './app.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { PackageModule } from './modules/package/package.module';
 import { NotificationComponent } from './modules/shared/components/modals/notification/notification.component';
+import { CartModule } from './modules/cart/cart.module';
+import { OrderModule } from './modules/order/order.module';
 
 //Angular 16 project is created using 'npx -p @angular/cli@16 ng new NgETravel' command. Guide Link- https://www.youtube.com/watch?v=LYNG3kcKRQ8
 
@@ -35,7 +37,9 @@ import { NotificationComponent } from './modules/shared/components/modals/notifi
     AdminModule,
     SharedModule,
     ModalModule.forRoot(),
-    PackageModule
+    PackageModule,
+    CartModule,
+    OrderModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}

@@ -1,0 +1,21 @@
+.order-details-container {
+  h2 {
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+  }
+
+  .order-info {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+  }
+
+  .order-item {
+    background-color: #fff;
+    border-radius: 0.5rem;
+  }
+
+  .no-order {
+    padding: 2rem;
+    font-size: 1.2rem;
+  }
+}

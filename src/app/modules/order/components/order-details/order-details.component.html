@@ -1,0 +1,22 @@
+<div class="order-details-container container my-5">
+  <h2>Order Details</h2>
+  <div *ngIf="order; else noOrder">
+    <div class="order-info card shadow p-4 mb-4">
+      <p><strong>Order ID:</strong> {{ order.orderId }}</p>
+      <p><strong>Order Date:</strong> {{ formatDate(order.orderDate) }}</p>
+      <p><strong>Total Amount:</strong> ${{ order.totalAmount }}</p>
+      <p><strong>Status:</strong> {{ order.isShipped ? 'Shipped' : 'Processing' }}</p>
+    </div>
+    <div class="order-items">
+      <h3>Items:</h3>
+      <div *ngFor="let item of order.orderItems" class="order-item card shadow p-3 mb-3">
+        <p><strong>{{ item.productName }}</strong> (x{{ item.quantity }}) - ${{ item.totalPrice }}</p>
+      </div>
+    </div>
+  </div>
+  <ng-template #noOrder>
+    <div class="no-order text-center text-muted">
+      <p>Order not found.</p>
+    </div>
+  </ng-template>
+</div>
