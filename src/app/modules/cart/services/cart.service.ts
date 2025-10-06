@@ -11,7 +11,7 @@ export class CartService {
   constructor(private http: HttpClient) { }
 
   getCartItems(): Observable<any> {
-    return this.http.get('${environment.apiUrl}/api/cart/cart-items');
+    return this.http.get(`${environment.apiUrl}/api/cart/cart-items`);
   }
 
   increaseQuantity(cartItemId: number): Observable<any> {
@@ -24,5 +24,9 @@ export class CartService {
 
   removeFromCart(cartItemId: number): Observable<any> {
     return this.http.post(`${environment.apiUrl}/api/cart/remove-from-cart?cartItemId=${cartItemId}`, {});
+  }
+
+  addToCart(packageId: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/api/cart/add-to-cart?packageId=${packageId}`, {});
   }
 }

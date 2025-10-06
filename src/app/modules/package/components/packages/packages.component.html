@@ -9,31 +9,50 @@
   <ng-container *ngIf="packages">
 
     <div class="container text-center mt-5">
-      <div class="row  justify-content-md-between">
+      <div class="row justify-content-md-between">
         <div *ngFor="let package of packages; let i = index" class="col-md-6 col-12 col-sm-12">
 
           <div class="card text-center mb-3" style="width: 18rem;">
             <div class="card-body">
               <h5 class="card-title">{{package.packageName}}</h5>
               <p class="card-text">{{package.destination}}</p>
-              <p class="card-text">{{package.price}}</p>
-              <div class="border-top pt-3 mt-5">
-                <div class="row">
+              <p class="card-text fw-bold text-primary">৳{{package.price}}</p>
+              
+              <div class="border-top pt-3 mt-3">
+                <!-- Buy Now এবং Add To Cart বাটন -->
+                <div class="row mb-3">
                   <div class="col-6">
-                    <a href="#" class="btn btn-sm btn-outline-danger rounded-pill">Delete</a> <!-- {{package.packageId}} -->
+                    <button 
+                      (click)="buyNow(package.packageId)" 
+                      class="btn btn-sm btn-success rounded-pill w-100">
+                      Buy Now
+                    </button>
                   </div>
                   <div class="col-6">
-                    <!-- <a [routerLink]="['/packages/edit-package/{{package.packageId}}']" class="btn btn-sm btn-outline-primary rounded-pill">Edit</a> -->
-                    <a [routerLink]="['/packages/edit-package', package.packageId]" class="btn btn-sm btn-outline-primary rounded-pill">Edit</a>
+                    <button 
+                      (click)="addToCart(package.packageId)" 
+                      class="btn btn-sm btn-primary rounded-pill w-100">
+                      Add To Cart
+                    </button>
                   </div>
                 </div>
-                <div class="row justify-content-center">
+
+                <!-- অন্যান্য বাটন -->
+                <div class="row">
+                  <div class="col-6">
+                    <a href="#" class="btn btn-sm btn-outline-danger rounded-pill">Delete</a>
+                  </div>
+                  <div class="col-6">
+                    <a [routerLink]="['/packages/edit-package', package.packageId]" 
+                       class="btn btn-sm btn-outline-primary rounded-pill">Edit</a>
+                  </div>
+                </div>
+                <div class="row justify-content-center mt-2">
                   <div class="col-6">
                     <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">Details</a>
                   </div>
                 </div>
               </div>
-              <!-- <a href="#" class="btn btn-primary">{{package.Price}}</a> -->
             </div>
           </div>
 

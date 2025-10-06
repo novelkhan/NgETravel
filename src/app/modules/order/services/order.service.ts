@@ -11,15 +11,15 @@ export class OrderService {
   constructor(private http: HttpClient) { }
 
   cartCheckout(selectedCartItems: number[]): Observable<any> {
-    return this.http.post('${environment.apiUrl}/api/order/cart-checkout', selectedCartItems);
+    return this.http.post(`${environment.apiUrl}/api/order/cart-checkout`, selectedCartItems);
   }
 
   singleCheckout(packageId: number): Observable<any> {
-    return this.http.post('${environment.apiUrl}/api/order/single-checkout', packageId);
+    return this.http.post(`${environment.apiUrl}/api/order/single-checkout`, packageId);
   }
 
   getOrderHistory(): Observable<any> {
-    return this.http.post('${environment.apiUrl}/api/order/order-history', {});
+    return this.http.post(`${environment.apiUrl}/api/order/order-history`, {});
   }
 
   getOrderDetails(orderId: number): Observable<any> {
