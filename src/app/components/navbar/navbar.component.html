@@ -1,46 +1,128 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="nav-brand">
-                <img src="./assets/images/logo.png" class="me-3" alt="Logo">
+            <a class="navbar-brand" routerLink="/" style="cursor: pointer;">
+                <img src="./assets/images/logo.png" class="me-2" alt="Logo" style="height: 40px;">
+                <span class="fw-bold">Unique Travels</span>
             </a>
             <button class="navbar-toggler" type="button" (click)="toggleCollapsed()">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" [ngClass]="{'collapse': collapsed}">
                 <ul class="navbar-nav me-auto">
+                    <!-- Home Menu -->
                     <li class="nav-item">
                         <a class="nav-link" routerLink="/" routerLinkActive="active"
-                            [routerLinkActiveOptions]="{exact: true}">Home</a>
+                            [routerLinkActiveOptions]="{exact: true}">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
                     </li>
-                    <ng-container *ngIf="accountService.user$ | async">
-                        <li class="nav-item">
-                            <a class="nav-link" routerLink="/customer" routerLinkActive="active">Customer</a>
-                        </li>
-                        <li class="nav-item" *appUserHasRole="['Admin']">
-                            <a class="nav-link" routerLink="/admin" routerLinkActive="active">Admin</a>
+                    
+                    <!-- Packages Menu - সবার জন্য -->
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/packages" routerLinkActive="active">
+                            <i class="bi bi-box-seam"></i> Packages
+                        </a>
+                    </li>
+                    
+                    <!-- Customer Dropdown Menu - শুধু Customer দের জন্য (Admin নয়) -->
+                    <ng-container *appUserHasRole="['Customer']">
+                        <li class="nav-item dropdown" *appUserHasNotRole="['Admin']">
+                            <a class="nav-link dropdown-toggle" href="#" id="customerDropdown" role="button" 
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> My Account
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="customerDropdown">
+                                <li>
+                                    <a class="dropdown-item" routerLink="/customer">
+                                        <i class="bi bi-speedometer2"></i> Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" routerLink="/orders">
+                                        <i class="bi bi-bag-check"></i> My Orders
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bi bi-gear"></i> Settings
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ng-container>
+
+                    <!-- Admin Dropdown Menu - শুধু Admin দের জন্য -->
+                    <li class="nav-item dropdown" *appUserHasRole="['Admin']">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-shield-lock"></i> Admin Panel
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                            <li>
+                                <a class="dropdown-item" routerLink="/admin">
+                                    <i class="bi bi-people"></i> Manage Members
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" routerLink="/packages">
+                                    <i class="bi bi-box-seam"></i> Manage Packages
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" routerLink="/packages/add-package">
+                                    <i class="bi bi-plus-circle"></i> Add New Package
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-graph-up"></i> Reports
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
 
+                <!-- Guest User Buttons -->
                 <ul class="navbar-nav" *ngIf="(accountService.user$ | async) === null">
                     <li class="nav-item">
-                        <a class="btn btn-secondary mx-2" routerLink="/account/register" routerLinkActive="active">
-                            Create account
+                        <a class="btn btn-outline-light mx-2" routerLink="/account/register">
+                            <i class="bi bi-person-plus"></i> Register
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-secondary" routerLink="/account/login" routerLinkActive="active">
-                            Login
+                        <a class="btn btn-light" routerLink="/account/login">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
                         </a>
                     </li>
                 </ul>
 
+                <!-- Logged In User Area -->
                 <div class="d-flex align-items-center" *ngIf="(accountService.user$ | async) as user">
-                    <a class="text-white" style="text-decoration: none; cursor: pointer;">
-                        Hi <span class="h3 text-warning">{{user.firstName | titlecase}}</span>
-                    </a>
-                    <a class="btn btn-secondary ms-2" (click)="logout()">Logout</a>
+                    
+                    <!-- Cart Icon - শুধু Customer দের জন্য -->
+                    <div class="position-relative me-3" *appUserHasRole="['Customer']">
+                        <a routerLink="/cart" class="text-white position-relative" style="text-decoration: none; cursor: pointer; font-size: 1.5rem;">
+                            <i class="bi bi-cart3"></i>
+                            <span *ngIf="cartItemCount > 0" 
+                                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                  style="font-size: 0.7rem;">
+                                {{cartItemCount}}
+                            </span>
+                        </a>
+                    </div>
+
+                    <!-- User Greeting -->
+                    <span class="text-white me-3">
+                        Hi, <span class="fw-bold text-warning">{{user.firstName | titlecase}}</span>
+                    </span>
+
+                    <!-- Logout Button -->
+                    <button class="btn btn-outline-light btn-sm" (click)="logout()">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
                 </div>
             </div>
         </div>

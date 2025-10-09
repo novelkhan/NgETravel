@@ -1,3 +1,63 @@
 .active {
-    color: brown !important;
+    color: #ffc107 !important;
+    font-weight: bold;
+}
+
+.navbar-brand {
+    transition: transform 0.2s;
+    
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+.nav-link {
+    transition: all 0.3s ease;
+    
+    &:hover {
+        color: #ffc107 !important;
+        transform: translateY(-2px);
+    }
+}
+
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    .dropdown-item {
+        transition: all 0.2s;
+        
+        &:hover {
+            background-color: #007bff;
+            color: white;
+            padding-left: 1.5rem;
+        }
+        
+        i {
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+        }
+    }
+}
+
+// Cart badge animation
+.badge {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+// Mobile responsive
+@media (max-width: 991px) {
+    .dropdown-menu {
+        background-color: rgba(255, 255, 255, 0.95);
+    }
 }

@@ -8,6 +8,7 @@ import { UserHasRoleDirective } from './directives/user-has-role.directive';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { UserHasNotRoleDirective } from './directives/user-has-not-role.directive';
 
 
 
@@ -17,7 +18,8 @@ import { RouterModule } from '@angular/router';
     ValidationMessagesComponent,
     NotificationComponent,
     ExpiringSessionCountdownComponent,
-    UserHasRoleDirective
+    UserHasRoleDirective,
+    UserHasNotRoleDirective
   ],
   imports: [
     CommonModule
@@ -28,6 +30,7 @@ import { RouterModule } from '@angular/router';
     HttpClientModule,
     ValidationMessagesComponent,
     UserHasRoleDirective,
+    UserHasNotRoleDirective,
     NotificationComponent,
     ExpiringSessionCountdownComponent
   ]

@@ -1,51 +1,62 @@
-import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, Input, OnInit, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
 import { AccountService } from '../../account/services/account.service';
 import { jwtDecode } from 'jwt-decode';
-import { take } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Directive({
   selector: '[appUserHasRole]'
 })
-export class UserHasRoleDirective implements OnInit{
+export class UserHasRoleDirective implements OnInit, OnDestroy {
 
   @Input() appUserHasRole: string[] = [];
+  private destroy$ = new Subject<void>();
+  private hasView = false;
 
-  constructor(private viewContainerRef: ViewContainerRef,
+  constructor(
+    private viewContainerRef: ViewContainerRef,
     private templateRef: TemplateRef<any>,
-    private accountService: AccountService) { }
-
+    private accountService: AccountService
+  ) {}
 
   ngOnInit(): void {
-
-    this.accountService.user$.pipe((take(1))).subscribe({
+    // Continuously observe user changes
+    this.accountService.user$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: user => {
         if (user) {
           const decodedToken: any = jwtDecode(user.jwt);
+          
+          let hasRole = false;
 
-          // if (decodedToken.role.some((role: any) => this.appUserHasRole.includes(role))) {
-          //   this.viewContainerRef.createEmbeddedView(this.templateRef);
-          // } else {
-          //   this.viewContainerRef.clear();
-          // }
-
+          // Check if user has the required role
           if (Array.isArray(decodedToken.role)) {
-            if (decodedToken.role.some((role: any) => this.appUserHasRole.includes(role))) {
-              this.viewContainerRef.createEmbeddedView(this.templateRef);
-            } else {
-              this.viewContainerRef.clear();
-            }
+            hasRole = decodedToken.role.some((role: any) => this.appUserHasRole.includes(role));
           } else {
-            if (this.appUserHasRole.includes(decodedToken.role)) {
-              this.viewContainerRef.createEmbeddedView(this.templateRef);
-            } else {
-              this.viewContainerRef.clear();
-            }
+            hasRole = this.appUserHasRole.includes(decodedToken.role);
+          }
+
+          // Show or hide the element
+          if (hasRole && !this.hasView) {
+            this.viewContainerRef.createEmbeddedView(this.templateRef);
+            this.hasView = true;
+          } else if (!hasRole && this.hasView) {
+            this.viewContainerRef.clear();
+            this.hasView = false;
           }
         } else {
-          this.viewContainerRef.clear();
+          // No user logged in - hide the element
+          if (this.hasView) {
+            this.viewContainerRef.clear();
+            this.hasView = false;
+          }
         }
       }
-    })
+    });
+  }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

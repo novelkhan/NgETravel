@@ -1,13 +1,16 @@
-import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, Input, OnInit, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
 import { AccountService } from '../../account/services/account.service';
 import { jwtDecode } from 'jwt-decode';
-import { take } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Directive({
   selector: '[appUserHasNotRole]'
 })
-export class UserHasNotRoleDirective implements OnInit {
+export class UserHasNotRoleDirective implements OnInit, OnDestroy {
+  
   @Input() appUserHasNotRole: string[] = [];
+  private destroy$ = new Subject<void>();
+  private hasView = false;
 
   constructor(
     private viewContainerRef: ViewContainerRef,
@@ -16,33 +19,44 @@ export class UserHasNotRoleDirective implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.accountService.user$.pipe(take(1)).subscribe({
+    // Continuously observe user changes
+    this.accountService.user$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: user => {
         if (user) {
           const decodedToken: any = jwtDecode(user.jwt);
+          
+          let hasExcludedRole = false;
 
+          // Check if user has any of the excluded roles
           if (Array.isArray(decodedToken.role)) {
-            // যদি রোলগুলোর মধ্যে কোনোটি appUserHasNotRole-এ থাকে, তাহলে টেমপ্লেট হাইড করব
-            if (decodedToken.role.some((role: any) => this.appUserHasNotRole.includes(role))) {
-              this.viewContainerRef.clear();
-            } else {
-              // যদি কোনো রোল না মেলে, তাহলে টেমপ্লেট দেখাব
-              this.viewContainerRef.createEmbeddedView(this.templateRef);
-            }
+            hasExcludedRole = decodedToken.role.some((role: any) => this.appUserHasNotRole.includes(role));
           } else {
-            // যদি রোল সিঙ্গেল স্ট্রিং হয় এবং appUserHasNotRole-এ থাকে, তাহলে হাইড করব
-            if (this.appUserHasNotRole.includes(decodedToken.role)) {
-              this.viewContainerRef.clear();
-            } else {
-              // যদি রোল না মেলে, তাহলে টেমপ্লেট দেখাব
-              this.viewContainerRef.createEmbeddedView(this.templateRef);
-            }
+            hasExcludedRole = this.appUserHasNotRole.includes(decodedToken.role);
+          }
+
+          // Show element only if user does NOT have the excluded role
+          if (!hasExcludedRole && !this.hasView) {
+            this.viewContainerRef.createEmbeddedView(this.templateRef);
+            this.hasView = true;
+          } else if (hasExcludedRole && this.hasView) {
+            this.viewContainerRef.clear();
+            this.hasView = false;
           }
         } else {
-          // যদি ইউজার না থাকে, তাহলে টেমপ্লেট হাইড করব
-          this.viewContainerRef.clear();
+          // No user logged in - hide the element
+          if (this.hasView) {
+            this.viewContainerRef.clear();
+            this.hasView = false;
+          }
         }
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

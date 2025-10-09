@@ -16,6 +16,7 @@ const routes: Routes = [
       { path: 'admin', loadChildren: () => import('./modules/admin/admin.module').then(module => module.AdminModule) },
       { path: 'packages', loadChildren: () => import('./modules/package/package.module').then(module => module.PackageModule) },
       { path: 'cart', loadChildren: () => import('./modules/cart/cart.module').then(module => module.CartModule) },
+      { path: 'orders', loadChildren: () => import('./modules/order/order.module').then(module => module.OrderModule) }
     ]
   },
   // Implenting lazy loading by the following format

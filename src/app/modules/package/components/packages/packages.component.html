@@ -20,7 +20,8 @@
               
               <div class="border-top pt-3 mt-3">
                 <!-- Buy Now এবং Add To Cart বাটন -->
-                <div class="row mb-3">
+                <ng-container *appUserHasNotRole="['Admin']">
+                <div class="row mb-3" *appUserHasRole="['Customer']">
                   <div class="col-6">
                     <button 
                       (click)="buyNow(package.packageId)" 
@@ -36,9 +37,10 @@
                     </button>
                   </div>
                 </div>
+                </ng-container>
 
                 <!-- অন্যান্য বাটন -->
-                <div class="row">
+                <div class="row"  *appUserHasRole="['Admin']">
                   <div class="col-6">
                     <a href="#" class="btn btn-sm btn-outline-danger rounded-pill">Delete</a>
                   </div>

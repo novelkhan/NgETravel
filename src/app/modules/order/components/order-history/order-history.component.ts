@@ -32,7 +32,7 @@ export class OrderHistoryComponent implements OnInit {
   }
 
   navigateToOrderDetails(orderId: number): void {
-    this.router.navigate([`/order-details/${orderId}`]);
+    this.router.navigate([`/orders/order-details/${orderId}`]);
   }
 
   formatDate(date: string): string {
