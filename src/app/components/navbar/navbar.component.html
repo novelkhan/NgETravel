@@ -20,7 +20,8 @@
                     
                     <!-- Packages Menu - সবার জন্য -->
                     <li class="nav-item">
-                        <a class="nav-link" routerLink="/packages" routerLinkActive="active">
+                        <a class="nav-link" routerLink="/packages" routerLinkActive="active"
+                           [routerLinkActiveOptions]="{exact: true}">
                             <i class="bi bi-box-seam"></i> Packages
                         </a>
                     </li>
@@ -28,18 +29,27 @@
                     <!-- Customer Dropdown Menu - শুধু Customer দের জন্য (Admin নয়) -->
                     <ng-container *appUserHasRole="['Customer']">
                         <li class="nav-item dropdown" *appUserHasNotRole="['Admin']">
-                            <a class="nav-link dropdown-toggle" href="#" id="customerDropdown" role="button" 
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" 
+                               [class.active]="isCustomerDropdownActive()"
+                               href="#" 
+                               id="customerDropdown" 
+                               role="button" 
+                               data-bs-toggle="dropdown" 
+                               aria-expanded="false">
                                 <i class="bi bi-person-circle"></i> My Account
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="customerDropdown">
                                 <li>
-                                    <a class="dropdown-item" routerLink="/customer">
+                                    <a class="dropdown-item" 
+                                       routerLink="/customer" 
+                                       routerLinkActive="active">
                                         <i class="bi bi-speedometer2"></i> Dashboard
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" routerLink="/orders">
+                                    <a class="dropdown-item" 
+                                       routerLink="/orders" 
+                                       routerLinkActive="active">
                                         <i class="bi bi-bag-check"></i> My Orders
                                     </a>
                                 </li>
@@ -55,23 +65,35 @@
 
                     <!-- Admin Dropdown Menu - শুধু Admin দের জন্য -->
                     <li class="nav-item dropdown" *appUserHasRole="['Admin']">
-                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" 
-                           data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" 
+                           [class.active]="isAdminDropdownActive()"
+                           href="#" 
+                           id="adminDropdown" 
+                           role="button" 
+                           data-bs-toggle="dropdown" 
+                           aria-expanded="false">
                             <i class="bi bi-shield-lock"></i> Admin Panel
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="adminDropdown">
                             <li>
-                                <a class="dropdown-item" routerLink="/admin">
+                                <a class="dropdown-item" 
+                                   routerLink="/admin" 
+                                   routerLinkActive="active">
                                     <i class="bi bi-people"></i> Manage Members
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" routerLink="/packages">
+                                <a class="dropdown-item" 
+                                   routerLink="/packages" 
+                                   routerLinkActive="active"
+                                   [routerLinkActiveOptions]="{exact: true}">
                                     <i class="bi bi-box-seam"></i> Manage Packages
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" routerLink="/packages/add-package">
+                                <a class="dropdown-item" 
+                                   routerLink="/packages/add-package" 
+                                   routerLinkActive="active">
                                     <i class="bi bi-plus-circle"></i> Add New Package
                                 </a>
                             </li>
@@ -104,7 +126,9 @@
                     
                     <!-- Cart Icon - শুধু Customer দের জন্য -->
                     <div class="position-relative me-3" *appUserHasRole="['Customer']">
-                        <a routerLink="/cart" class="text-white position-relative" style="text-decoration: none; cursor: pointer; font-size: 1.5rem;">
+                        <a routerLink="/cart" 
+                           class="text-white position-relative" 
+                           style="text-decoration: none; cursor: pointer; font-size: 1.5rem;">
                             <i class="bi bi-cart3"></i>
                             <span *ngIf="cartItemCount > 0" 
                                   class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
