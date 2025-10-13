@@ -23,7 +23,9 @@ export class OrderHistoryComponent implements OnInit {
   fetchOrderHistory(): void {
     this.orderService.getOrderHistory().subscribe({
       next: (response: Order[]) => {
-        this.orders = response.sort((a, b) => new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime());
+        this.orders = response.sort((a, b) => 
+          new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()
+        );
       },
       error: (error) => {
         console.error('Error fetching order history:', error);
@@ -36,6 +38,40 @@ export class OrderHistoryComponent implements OnInit {
   }
 
   formatDate(date: string): string {
-    return new Date(date).toLocaleDateString();
+    return new Date(date).toLocaleDateString('bn-BD', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  getStatusBadgeClass(status: string): string {
+    switch (status) {
+      case 'Processing':
+        return 'badge bg-warning text-dark';
+      case 'TicketProvided':
+        return 'badge bg-info text-white';
+      case 'Completed':
+        return 'badge bg-success';
+      case 'Cancelled':
+        return 'badge bg-danger';
+      default:
+        return 'badge bg-secondary';
+    }
+  }
+
+  getStatusText(status: string): string {
+    switch (status) {
+      case 'Processing':
+        return 'প্রসেসিং';
+      case 'TicketProvided':
+        return 'টিকেট প্রদান করা হয়েছে';
+      case 'Completed':
+        return 'সম্পন্ন';
+      case 'Cancelled':
+        return 'বাতিল';
+      default:
+        return status;
+    }
   }
 }

@@ -1,0 +1,247 @@
+<!-- src/app/modules/admin/components/admin-orders/admin-orders.component.html -->
+
+<div class="container-fluid py-4">
+  <!-- Page Header -->
+  <div class="row mb-4">
+    <div class="col">
+      <h2 class="fw-bold">
+        <i class="bi bi-cart-check me-2"></i>সকল অর্ডার ম্যানেজমেন্ট
+      </h2>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-4" *ngIf="statistics">
+    <div class="col-md-4 col-sm-6 mb-3">
+      <div class="card text-white bg-primary shadow">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-cart me-2"></i>মোট অর্ডার
+          </h5>
+          <h2 class="fw-bold mb-0">{{statistics.totalOrders}}</h2>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4 col-sm-6 mb-3">
+      <div class="card text-white bg-warning shadow">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-hourglass-split me-2"></i>প্রসেসিং
+          </h5>
+          <h2 class="fw-bold mb-0">{{statistics.processingOrders}}</h2>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4 col-sm-6 mb-3">
+      <div class="card text-white bg-info shadow">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-ticket me-2"></i>টিকেট প্রদান
+          </h5>
+          <h2 class="fw-bold mb-0">{{statistics.ticketProvidedOrders}}</h2>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4 col-sm-6 mb-3">
+      <div class="card text-white bg-success shadow">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-check-circle me-2"></i>সম্পন্ন
+          </h5>
+          <h2 class="fw-bold mb-0">{{statistics.completedOrders}}</h2>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4 col-sm-6 mb-3">
+      <div class="card text-white bg-danger shadow">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-x-circle me-2"></i>বাতিল
+          </h5>
+          <h2 class="fw-bold mb-0">{{statistics.cancelledOrders}}</h2>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4 col-sm-6 mb-3">
+      <div class="card text-white bg-dark shadow">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-currency-dollar me-2"></i>মোট আয়
+          </h5>
+          <h2 class="fw-bold mb-0">৳{{statistics.totalRevenue}}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter and Search Section -->
+  <div class="row mb-4">
+    <div class="col-md-8 mb-3">
+      <div class="btn-group btn-group-filter" role="group">
+        <button 
+          type="button" 
+          class="btn btn-outline-primary" 
+          [class.active]="selectedFilter === 'All'"
+          (click)="filterOrders('All')">
+          <i class="bi bi-list-ul me-1"></i>সকল ({{orders.length}})
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-outline-warning" 
+          [class.active]="selectedFilter === 'Processing'"
+          (click)="filterOrders('Processing')">
+          <i class="bi bi-hourglass-split me-1"></i>প্রসেসিং
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-outline-info" 
+          [class.active]="selectedFilter === 'TicketProvided'"
+          (click)="filterOrders('TicketProvided')">
+          <i class="bi bi-ticket me-1"></i>টিকেট প্রদান
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-outline-success" 
+          [class.active]="selectedFilter === 'Completed'"
+          (click)="filterOrders('Completed')">
+          <i class="bi bi-check-circle me-1"></i>সম্পন্ন
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-outline-danger" 
+          [class.active]="selectedFilter === 'Cancelled'"
+          (click)="filterOrders('Cancelled')">
+          <i class="bi bi-x-circle me-1"></i>বাতিল
+        </button>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="input-group">
+        <span class="input-group-text">
+          <i class="bi bi-search"></i>
+        </span>
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="অর্ডার আইডি বা কাস্টমার নাম দিয়ে খুঁজুন..."
+          [(ngModel)]="searchTerm"
+          (keyup)="searchOrders()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-3 text-muted">অর্ডার লোড হচ্ছে...</p>
+  </div>
+
+  <!-- Orders Table -->
+  <div *ngIf="!loading && filteredOrders.length > 0" class="card shadow">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>অর্ডার আইডি</th>
+              <th>কাস্টমার তথ্য</th>
+              <th>অর্ডার তারিখ</th>
+              <th>প্যাকেজ সংখ্যা</th>
+              <th>মোট পরিমাণ</th>
+              <th>স্ট্যাটাস</th>
+              <th class="text-center">অ্যাকশন</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of filteredOrders">
+              <td>
+                <span class="fw-bold text-primary">#{{order.orderId}}</span>
+              </td>
+              <td>
+                <div>
+                  <strong>{{order.customerName}}</strong>
+                </div>
+                <small class="text-muted">
+                  <i class="bi bi-envelope me-1"></i>{{order.customerEmail}}
+                </small>
+              </td>
+              <td>
+                <i class="bi bi-calendar3 me-1"></i>{{formatDate(order.orderDate)}}
+              </td>
+              <td>
+                <span class="badge bg-secondary">{{order.totalItems}} টি</span>
+              </td>
+              <td>
+                <strong class="text-primary">৳{{order.totalAmount}}</strong>
+              </td>
+              <td>
+                <span [ngClass]="getStatusBadgeClass(order.orderStatus)">
+                  {{getStatusText(order.orderStatus)}}
+                </span>
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group">
+                  <button 
+                    class="btn btn-outline-primary"
+                    (click)="viewOrderDetails(order.orderId)"
+                    title="বিস্তারিত দেখুন">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button 
+                    *ngIf="order.orderStatus === 'Processing'"
+                    class="btn btn-outline-info"
+                    (click)="provideTicket(order.orderId)"
+                    title="টিকেট প্রদান করুন">
+                    <i class="bi bi-ticket"></i>
+                  </button>
+                  <button 
+                    *ngIf="order.orderStatus === 'TicketProvided'"
+                    class="btn btn-outline-success"
+                    (click)="markAsCompleted(order.orderId)"
+                    title="সম্পন্ন করুন">
+                    <i class="bi bi-check-circle"></i>
+                  </button>
+                  <button 
+                    *ngIf="order.orderStatus !== 'Cancelled' && order.orderStatus !== 'Completed'"
+                    class="btn btn-outline-danger"
+                    (click)="cancelOrder(order.orderId)"
+                    title="বাতিল করুন">
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Orders Found -->
+  <div *ngIf="!loading && filteredOrders.length === 0" class="text-center py-5">
+    <i class="bi bi-inbox display-1 text-muted"></i>
+    <h4 class="mt-3 text-muted">কোনো অর্ডার পাওয়া যায়নি</h4>
+    <p class="text-muted">
+      <span *ngIf="searchTerm">
+        "{{searchTerm}}" এর জন্য কোনো ফলাফল নেই।
+      </span>
+      <span *ngIf="!searchTerm && selectedFilter !== 'All'">
+        এই ফিল্টারে কোনো অর্ডার নেই।
+      </span>
+    </p>
+    <button 
+      *ngIf="searchTerm || selectedFilter !== 'All'"
+      class="btn btn-primary"
+      (click)="searchTerm = ''; filterOrders('All')">
+      <i class="bi bi-arrow-counterclockwise me-2"></i>সব অর্ডার দেখুন
+    </button>
+  </div>
+</div>

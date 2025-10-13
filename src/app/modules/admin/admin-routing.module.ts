@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './components/admin/admin.component';
 import { AdminGuard } from '../shared/guards/admin.guard';
 import { AddEditMemberComponent } from './components/add-edit-member/add-edit-member.component';
+import { AdminOrdersComponent } from './components/admin-orders/admin-orders.component';
+import { AdminOrderDetailsComponent } from './components/admin-order-details/admin-order-details.component';
 
 const routes: Routes = [
   {
@@ -11,10 +13,12 @@ const routes: Routes = [
     canActivate: [AdminGuard],
     children: [
       { path: '', component: AdminComponent},
-      // path for creating a new member
+      // Member management routes
       { path: 'add-edit-member', component: AddEditMemberComponent},
-      // path for editing an existing member
       { path: 'add-edit-member/:id', component: AddEditMemberComponent},
+      // Order management routes
+      { path: 'orders', component: AdminOrdersComponent},
+      { path: 'order-details/:id', component: AdminOrderDetailsComponent},
     ]
   },
 ];

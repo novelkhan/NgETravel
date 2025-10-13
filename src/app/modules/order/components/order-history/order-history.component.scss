@@ -1,30 +1,115 @@
+// order-history.component.scss
+
 .container {
   h2 {
     font-weight: bold;
+    color: #333;
   }
 
   .card {
     border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+    }
   }
 
   .order-header {
     h3 {
       font-size: 1.5rem;
+      color: #0d6efd;
+    }
+  }
+
+  .badge {
+    font-size: 0.875rem;
+    padding: 0.5em 1em;
+  }
+
+  // Status Timeline Styles
+  .bg-light {
+    background-color: #f8f9fa !important;
+    
+    .text-success {
+      color: #198754 !important;
+      font-weight: 600;
+    }
+    
+    .bi {
+      transition: transform 0.3s;
+    }
+    
+    &:hover .bi {
+      transform: scale(1.2);
     }
   }
 
   .order-items {
     .h5 {
       font-weight: bold;
+      color: #495057;
     }
 
     img {
       border-radius: 0.5rem;
+      transition: transform 0.2s;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+    
+    .border {
+      transition: background-color 0.2s;
+      
+      &:hover {
+        background-color: #f8f9fa;
+      }
     }
   }
 
   .text-muted {
     font-size: 1.2rem;
     padding: 2rem;
+  }
+  
+  .bi-inbox {
+    color: #6c757d;
+  }
+}
+
+// Button Animation
+.btn {
+  transition: all 0.2s;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .order-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    
+    .badge {
+      margin-top: 0.5rem;
+    }
+  }
+  
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    
+    .text-center {
+      margin-bottom: 1rem;
+    }
+    
+    .flex-grow-1 {
+      display: none;
+    }
   }
 }

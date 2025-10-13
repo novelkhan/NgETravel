@@ -1,0 +1,204 @@
+<div class="container py-4">
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Order Details -->
+  <div *ngIf="!loading && order">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col">
+        <button class="btn btn-outline-secondary mb-3" (click)="goBack()">
+          <i class="bi bi-arrow-left"></i> ফিরে যান
+        </button>
+        <h2 class="fw-bold">
+          <i class="bi bi-receipt me-2"></i>অর্ডার বিস্তারিত #{{order.orderId}}
+        </h2>
+      </div>
+      <div class="col-auto">
+        <span [ngClass]="getStatusBadgeClass(order.orderStatus)" class="fs-5 px-3 py-2">
+          {{getStatusText(order.orderStatus)}}
+        </span>
+      </div>
+    </div>
+
+    <!-- Customer & Order Info -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card shadow">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>কাস্টমার তথ্য</h5>
+          </div>
+          <div class="card-body">
+            <p><strong>নাম:</strong> {{order.customerName}}</p>
+            <p><strong>ইমেইল:</strong> {{order.customerEmail}}</p>
+            <p><strong>ফোন:</strong> {{order.customerPhone || 'N/A'}}</p>
+            <p class="mb-0"><strong>কাস্টমার আইডি:</strong> {{order.customerId}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>অর্ডার তথ্য</h5>
+          </div>
+          <div class="card-body">
+            <p><strong>অর্ডার তারিখ:</strong> {{formatDate(order.orderDate)}}</p>
+            <p><strong>মোট পরিমাণ:</strong> <span class="text-primary fw-bold">৳{{order.totalAmount}}</span></p>
+            <p><strong>পেমেন্ট স্ট্যাটাস:</strong> 
+              <span [class]="order.isPaid ? 'badge bg-success' : 'badge bg-danger'">
+                {{order.isPaid ? 'পরিশোধিত' : 'অপরিশোধিত'}}
+              </span>
+            </p>
+            <p *ngIf="order.isTicketProvided" class="mb-1">
+              <strong>টিকেট প্রদানের তারিখ:</strong> {{formatDate(order.ticketProvidedDate!)}}
+            </p>
+            <p *ngIf="order.isCompleted" class="mb-0">
+              <strong>সম্পন্নের তারিখ:</strong> {{formatDate(order.completedDate!)}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="card shadow mb-4">
+      <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-cart-check me-2"></i>অর্ডারকৃত প্যাকেজসমূহ</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>ছবি</th>
+                <th>প্যাকেজ নাম</th>
+                <th>পরিমাণ</th>
+                <th>একক মূল্য</th>
+                <th>মোট মূল্য</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of order.orderItems">
+                <td>
+                  <img 
+                    *ngIf="item.productImage"
+                    [src]="'data:image/jpeg;base64,' + item.productImage"
+                    [alt]="item.productName"
+                    class="img-thumbnail"
+                    style="width: 80px; height: 80px; object-fit: cover;"
+                  />
+                  <div *ngIf="!item.productImage" class="bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                    <i class="bi bi-image"></i>
+                  </div>
+                </td>
+                <td class="align-middle">
+                  <strong>{{item.productName}}</strong>
+                </td>
+                <td class="align-middle">{{item.quantity}}</td>
+                <td class="align-middle">৳{{item.perUnitPrice}}</td>
+                <td class="align-middle fw-bold text-primary">৳{{item.totalPrice}}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="table-light">
+                <td colspan="4" class="text-end"><strong>সর্বমোট:</strong></td>
+                <td class="fw-bold text-primary fs-5">৳{{order.totalAmount}}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Management -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card shadow">
+          <div class="card-header bg-warning">
+            <h5 class="mb-0"><i class="bi bi-gear me-2"></i>অর্ডার স্ট্যাটাস পরিবর্তন</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label">স্ট্যাটাস নির্বাচন করুন:</label>
+              <select class="form-select" [(ngModel)]="selectedStatus">
+                <option value="Processing">প্রসেসিং</option>
+                <option value="TicketProvided">টিকেট প্রদান করা হয়েছে</option>
+                <option value="Completed">সম্পন্ন</option>
+                <option value="Cancelled">বাতিল</option>
+              </select>
+            </div>
+            <button 
+              class="btn btn-primary w-100"
+              (click)="updateOrderStatus()"
+              [disabled]="selectedStatus === order.orderStatus">
+              <i class="bi bi-check2-circle me-2"></i>স্ট্যাটাস আপডেট করুন
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow">
+          <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0"><i class="bi bi-pencil-square me-2"></i>অ্যাডমিন নোট</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <textarea 
+                class="form-control" 
+                rows="3" 
+                [(ngModel)]="adminNotes"
+                placeholder="নোট লিখুন..."></textarea>
+            </div>
+            <button 
+              class="btn btn-secondary w-100"
+              (click)="updateAdminNotes()">
+              <i class="bi bi-save me-2"></i>নোট সেভ করুন
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card shadow">
+      <div class="card-header bg-dark text-white">
+        <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>দ্রুত অ্যাকশন</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex gap-2 flex-wrap">
+          <button 
+            *ngIf="order.orderStatus === 'Processing'"
+            class="btn btn-info"
+            (click)="provideTicket()">
+            <i class="bi bi-ticket me-2"></i>টিকেট প্রদান করুন
+          </button>
+          <button 
+            *ngIf="order.orderStatus === 'TicketProvided'"
+            class="btn btn-success"
+            (click)="markAsCompleted()">
+            <i class="bi bi-check-circle me-2"></i>সম্পন্ন হিসাবে মার্ক করুন
+          </button>
+          <button 
+            *ngIf="order.orderStatus !== 'Cancelled' && order.orderStatus !== 'Completed'"
+            class="btn btn-danger"
+            (click)="cancelOrder()">
+            <i class="bi bi-x-circle me-2"></i>অর্ডার বাতিল করুন
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Not Found -->
+  <div *ngIf="!loading && !order" class="text-center py-5">
+    <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
+    <h4 class="mt-3">অর্ডার পাওয়া যায়নি</h4>
+    <button class="btn btn-primary mt-3" (click)="goBack()">
+      <i class="bi bi-arrow-left me-2"></i>ফিরে যান
+    </button>
+  </div>
+</div>

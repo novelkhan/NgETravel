@@ -78,10 +78,19 @@
                             <li>
                                 <a class="dropdown-item" 
                                    routerLink="/admin" 
-                                   routerLinkActive="active">
+                                   routerLinkActive="active"
+                                   [routerLinkActiveOptions]="{exact: true}">
                                     <i class="bi bi-people"></i> Manage Members
                                 </a>
                             </li>
+                            <li>
+                                <a class="dropdown-item" 
+                                   routerLink="/admin/orders" 
+                                   routerLinkActive="active">
+                                    <i class="bi bi-cart-check"></i> Manage Orders
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" 
                                    routerLink="/packages" 

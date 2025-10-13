@@ -87,7 +87,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
    * Admin dropdown এর কোনো route active আছে কিনা চেক করে
    */
   isAdminDropdownActive(): boolean {
-    return this.isRouteActive(['/admin', '/packages/add-package', '/packages/edit-package']);
+    return this.isRouteActive([
+      '/admin', 
+      '/admin/orders', 
+      '/admin/order-details',
+      '/packages/add-package', 
+      '/packages/edit-package'
+    ]);
   }
 
   logout() {

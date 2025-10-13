@@ -1,0 +1,83 @@
+// admin-order-details.component.scss
+
+.card {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+}
+
+.card-header {
+  font-weight: 600;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.badge {
+  font-size: 0.875rem;
+  padding: 0.5em 1em;
+}
+
+.btn {
+  transition: all 0.2s;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.table {
+  th {
+    font-weight: 600;
+    background-color: #f8f9fa;
+  }
+  
+  .img-thumbnail {
+    transition: transform 0.2s;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.form-control, .form-select {
+  transition: border-color 0.2s;
+  
+  &:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  }
+}
+
+// Animation
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .d-flex.gap-2 {
+    flex-direction: column;
+    
+    .btn {
+      width: 100%;
+    }
+  }
+  
+  .table {
+    font-size: 0.875rem;
+  }
+}
