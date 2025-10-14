@@ -3,8 +3,9 @@ export interface MemberView {
     userName: string;
     firstName: string;
     lastName: string;
-    dateCreated: Date;
+    phoneNumber?: string;  // New field
     isLocked: boolean;
+    dateCreated: Date;
     isEmailConfirmed: boolean;
     roles: string[];
 }

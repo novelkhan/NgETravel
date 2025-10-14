@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment.development';
-import { MemberAddEdit } from '../../shared/models/admin/memberAddEdit.model';
 import { HttpClient } from '@angular/common/http';
-import { MemberView } from '../../shared/models/admin/memberView.model';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -11,39 +10,66 @@ export class AdminService {
 
   constructor(private http: HttpClient) { }
 
-  getMembers() {
-    return this.http.get<MemberView[]>(`${environment.apiUrl}/api/admin/get-members`);
+  /**
+   * Get all members
+   */
+  getMembers(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/admin/get-members`);
   }
 
-  getMember(id: string) {
-    return this.http.get<MemberAddEdit>(`${environment.apiUrl}/api/admin/get-member/${id}`);
+  /**
+   * Get single member by ID
+   */
+  getMember(id: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/admin/get-member/${id}`);
   }
 
-  getApplicationRoles() {
-    return this.http.get<string[]>(`${environment.apiUrl}/api/admin/get-application-roles`);
-  }
-
-  addEditMember(model: MemberAddEdit) {
+  /**
+   * Add or edit member
+   */
+  addEditMember(model: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}/api/admin/add-edit-member`, model);
   }
 
-  lockMember(id: string) {
+  /**
+   * Lock member account
+   */
+  lockMember(id: string): Observable<any> {
     return this.http.put(`${environment.apiUrl}/api/admin/lock-member/${id}`, {});
   }
 
-  unlockMember(id: string) {
+  /**
+   * Unlock member account
+   */
+  unlockMember(id: string): Observable<any> {
     return this.http.put(`${environment.apiUrl}/api/admin/unlock-member/${id}`, {});
   }
 
-  unConfirmEmail(id: string) {
-    return this.http.put(`${environment.apiUrl}/api/admin/unConfirmEmail/${id}`, {});
-  }
-
-  confirmEmail(id: string) {
+  /**
+   * Confirm member's email
+   */
+  confirmEmail(id: string): Observable<any> {
     return this.http.put(`${environment.apiUrl}/api/admin/confirmEmail/${id}`, {});
   }
 
-  deleteMember(id: string) {
-    return this.http.delete(`${environment.apiUrl}/api/admin/delete-member/${id}`, {});
+  /**
+   * Unconfirm member's email
+   */
+  unconfirmEmail(id: string): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/api/admin/unConfirmEmail/${id}`, {});
+  }
+
+  /**
+   * Delete member
+   */
+  deleteMember(id: string): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/api/admin/delete-member/${id}`);
+  }
+
+  /**
+   * Get all application roles
+   */
+  getApplicationRoles(): Observable<string[]> {
+    return this.http.get<string[]>(`${environment.apiUrl}/api/admin/get-application-roles`);
   }
 }

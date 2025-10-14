@@ -1,0 +1,215 @@
+// src/app/modules/admin/components/admin/admin.component.scss
+
+.table {
+  th {
+    font-weight: 600;
+    white-space: nowrap;
+    background-color: #343a40;
+    color: white;
+    border-bottom: 2px solid #dee2e6;
+  }
+  
+  tbody tr {
+    transition: background-color 0.2s, transform 0.2s;
+    
+    &:hover {
+      background-color: #f8f9fa;
+      transform: scale(0.995);
+    }
+  }
+  
+  td {
+    vertical-align: middle;
+  }
+}
+
+// Badge styling
+.badge {
+  font-size: 0.875rem;
+  padding: 0.375em 0.65em;
+  font-weight: 500;
+  
+  i {
+    font-size: 0.85em;
+  }
+}
+
+// Phone number badge
+.badge.bg-info {
+  background-color: #17a2b8 !important;
+  
+  i {
+    margin-right: 0.25rem;
+  }
+}
+
+// Email status badges
+.badge.bg-success {
+  i.bi-envelope-check-fill {
+    margin-right: 0.25rem;
+  }
+}
+
+.badge.bg-warning {
+  i.bi-envelope-exclamation {
+    margin-right: 0.25rem;
+  }
+}
+
+// Account status badges
+.badge.bg-danger {
+  i.bi-lock-fill {
+    margin-right: 0.25rem;
+  }
+}
+
+// Button group styling
+.btn-group {
+  flex-wrap: wrap;
+  
+  .btn {
+    transition: all 0.2s;
+    margin: 2px;
+    
+    &:hover {
+      transform: scale(1.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    i {
+      font-size: 1rem;
+    }
+  }
+}
+
+// Button colors
+.btn-outline-primary {
+  &:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+}
+
+.btn-outline-success {
+  &:hover {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+}
+
+.btn-outline-warning {
+  &:hover {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+  }
+}
+
+.btn-outline-info {
+  &:hover {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+  }
+}
+
+.btn-outline-secondary {
+  &:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+}
+
+.btn-outline-danger {
+  &:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+}
+
+// Header styling
+h1 {
+  color: #333;
+  font-weight: 600;
+}
+
+// Loading state
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3rem;
+}
+
+// Empty state
+.bi-inbox {
+  color: #6c757d;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+// Responsive design
+@media (max-width: 992px) {
+  .table {
+    font-size: 0.875rem;
+    
+    .btn-group .btn {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      
+      i {
+        font-size: 0.85rem;
+      }
+    }
+    
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.25em 0.5em;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .table {
+    font-size: 0.75rem;
+    
+    th, td {
+      padding: 0.5rem 0.25rem;
+    }
+    
+    .btn-group {
+      flex-direction: column;
+      
+      .btn {
+        width: 100%;
+        margin: 1px 0;
+      }
+    }
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+
+// Print styles
+@media print {
+  .btn-group,
+  .btn {
+    display: none !important;
+  }
+  
+  .table {
+    th {
+      background-color: #343a40 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+}

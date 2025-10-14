@@ -5,9 +5,11 @@
                 <div class="text-center mb-4">
                     <h3 class="mb-3 font-weight-normal">
                         Let's Get Started to
-                        <span class="text-danger">Play</span>
+                        <span class="text-danger">Travel</span>
                     </h3>
                 </div>
+                
+                <!-- First Name -->
                 <div class="form-floating mb-3">
                     <input formControlName="firstName" type="text" placeholder="First name" class="form-control"
                         [class.is-invalid]="submitted && registerForm.get('firstName')?.errors">
@@ -21,6 +23,8 @@
                         First name must be at least 3, and maximum 15 characters
                     </span>
                 </div>
+                
+                <!-- Last Name -->
                 <div class="form-floating mb-3">
                     <input formControlName="lastName" type="text" placeholder="Last name" class="form-control"
                         [class.is-invalid]="submitted && registerForm.get('lastName')?.errors">
@@ -34,6 +38,8 @@
                         Last name must be at least 3, and maximum 15 characters
                     </span>
                 </div>
+                
+                <!-- Email -->
                 <div class="form-floating mb-3">
                     <input formControlName="email" type="text" placeholder="Email" class="form-control"
                         [class.is-invalid]="submitted && registerForm.get('email')?.errors">
@@ -46,6 +52,22 @@
                     </span>
                 </div>
 
+                <!-- Phone Number (NEW) -->
+                <div class="form-floating mb-3">
+                    <input formControlName="phoneNumber" type="tel" placeholder="Phone Number" class="form-control"
+                        [class.is-invalid]="submitted && registerForm.get('phoneNumber')?.errors">
+                    <label for="phoneNumber">Phone Number (Optional)</label>
+                    <span class="text-danger"
+                        *ngIf="submitted && 
+                        registerForm.get('phoneNumber')?.hasError('minlength') || registerForm.get('phoneNumber')?.hasError('maxlength')">
+                        Phone number must be at least 11, and maximum 15 digits
+                    </span>
+                    <span class="text-danger" *ngIf="submitted && registerForm.get('phoneNumber')?.hasError('pattern')">
+                        Invalid phone number format (digits only)
+                    </span>
+                </div>
+
+                <!-- Password -->
                 <div class="form-floating mb-3">
                     <input formControlName="password" type="password" placeholder="Password" class="form-control"
                         [class.is-invalid]="submitted && registerForm.get('password')?.errors">
@@ -60,12 +82,20 @@
                     </span>
                 </div>
 
+                <!-- Backend Error Messages -->
                 <div class="form-floatin" *ngIf="errorMessages.length > 0">
                     <app-validation-messages [errorMessages]="errorMessages"></app-validation-messages>
                 </div>
 
+                <!-- Submit Button -->
                 <div class="d-grid mt-4 px-1">
-                    <button class="btn btn-lg btn-info" type="submit">Create Account</button>
+                    <button class="btn btn-lg btn-info" type="submit" [disabled]="submitted">
+                        <span *ngIf="!submitted">Create Account</span>
+                        <span *ngIf="submitted">
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                            Creating...
+                        </span>
+                    </button>
                 </div>
             </form>
         </main>
