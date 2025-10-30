@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CustomerComponent } from './components/customer/customer.component';
 import { NotFoundComponent } from './modules/shared/components/errors/not-found/not-found.component';
 import { HomeComponent } from './components/home/home.component';
 import { AuthorizationGuard } from './modules/shared/guards/authorization.guard';
@@ -12,14 +11,13 @@ const routes: Routes = [
     runGuardsAndResolvers: 'always',
     canActivate: [AuthorizationGuard],
     children: [
-      { path: 'customer', component: CustomerComponent },
+      { path: 'customer', loadChildren: () => import('./modules/customer/customer.module').then(module => module.CustomerModule) },
       { path: 'admin', loadChildren: () => import('./modules/admin/admin.module').then(module => module.AdminModule) },
       { path: 'packages', loadChildren: () => import('./modules/package/package.module').then(module => module.PackageModule) },
       { path: 'cart', loadChildren: () => import('./modules/cart/cart.module').then(module => module.CartModule) },
       { path: 'orders', loadChildren: () => import('./modules/order/order.module').then(module => module.OrderModule) }
     ]
   },
-  // Implenting lazy loading by the following format
   { path: 'account', loadChildren: () => import('./modules/account/account.module').then(module => module.AccountModule) },
   { path: 'not-found', component: NotFoundComponent },
   { path: '**', component: NotFoundComponent, pathMatch: 'full' }

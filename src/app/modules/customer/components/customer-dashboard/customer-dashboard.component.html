@@ -1,0 +1,250 @@
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">
+        <i class="bi bi-person-circle me-2"></i>My Dashboard
+      </h1>
+    </div>
+  </div>
+
+  <!-- Profile Information Card -->
+  <div class="row mb-4" *ngIf="profile">
+    <div class="col-md-4">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-info-circle me-2"></i>Account Information
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-3">
+            <div class="avatar-circle mb-3">
+              <i class="bi bi-person-fill"></i>
+            </div>
+            <h4>{{profile.firstName | titlecase}} {{profile.lastName | titlecase}}</h4>
+            <p class="text-muted">{{profile.email}}</p>
+          </div>
+          <hr>
+          <div class="info-item">
+            <i class="bi bi-envelope me-2"></i>
+            <strong>Email Status:</strong>
+            <span *ngIf="profile.emailConfirmed" class="badge bg-success ms-2">Verified</span>
+            <span *ngIf="!profile.emailConfirmed" class="badge bg-warning text-dark ms-2">Not Verified</span>
+          </div>
+          <div class="info-item">
+            <i class="bi bi-telephone me-2"></i>
+            <strong>Phone:</strong>
+            <span *ngIf="profile.phoneNumber">{{profile.phoneNumber}}</span>
+            <span *ngIf="!profile.phoneNumber" class="text-muted">Not provided</span>
+          </div>
+          <div class="info-item">
+            <i class="bi bi-calendar me-2"></i>
+            <strong>Member Since:</strong>
+            {{formatDate(profile.dateCreated)}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Profile Form -->
+    <div class="col-md-8">
+      <div class="card shadow mb-4">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-pencil-square me-2"></i>Edit Profile
+          </h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" autocomplete="off">
+            
+            <!-- First Name -->
+            <div class="form-floating mb-3">
+              <input formControlName="firstName" 
+                     type="text" 
+                     placeholder="First name" 
+                     class="form-control"
+                     [class.is-invalid]="profileSubmitted && profileForm.get('firstName')?.errors">
+              <label for="firstName">First name</label>
+              <span class="text-danger" *ngIf="profileSubmitted && profileForm.get('firstName')?.hasError('required')">
+                First name is required
+              </span>
+              <span class="text-danger"
+                  *ngIf="profileSubmitted && 
+                  profileForm.get('firstName')?.hasError('minlength') || profileForm.get('firstName')?.hasError('maxlength')">
+                First name must be at least 3, and maximum 15 characters
+              </span>
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-floating mb-3">
+              <input formControlName="lastName" 
+                     type="text" 
+                     placeholder="Last name" 
+                     class="form-control"
+                     [class.is-invalid]="profileSubmitted && profileForm.get('lastName')?.errors">
+              <label for="lastName">Last name</label>
+              <span class="text-danger" *ngIf="profileSubmitted && profileForm.get('lastName')?.hasError('required')">
+                Last name is required
+              </span>
+              <span class="text-danger"
+                  *ngIf="profileSubmitted && 
+                  profileForm.get('lastName')?.hasError('minlength') || profileForm.get('lastName')?.hasError('maxlength')">
+                Last name must be at least 3, and maximum 15 characters
+              </span>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-floating mb-3">
+              <input formControlName="phoneNumber" 
+                     type="tel" 
+                     placeholder="Phone Number" 
+                     class="form-control"
+                     [class.is-invalid]="profileSubmitted && profileForm.get('phoneNumber')?.errors">
+              <label for="phoneNumber">Phone Number (Optional)</label>
+              <small class="text-muted ms-2">Example: 01712345678</small>
+              <span class="text-danger"
+                  *ngIf="profileSubmitted && 
+                  profileForm.get('phoneNumber')?.hasError('minlength') || profileForm.get('phoneNumber')?.hasError('maxlength')">
+                Phone number must be at least 11, and maximum 15 digits
+              </span>
+              <span class="text-danger" *ngIf="profileSubmitted && profileForm.get('phoneNumber')?.hasError('pattern')">
+                Invalid phone number format (digits only)
+              </span>
+            </div>
+
+            <!-- Backend Error Messages -->
+            <div class="mb-3" *ngIf="errorMessages.length > 0 && !showPasswordForm">
+              <app-validation-messages [errorMessages]="errorMessages"></app-validation-messages>
+            </div>
+
+            <!-- Update Profile Button -->
+            <button type="submit" 
+                    class="btn btn-primary w-100" 
+                    [disabled]="profileSubmitted">
+              <span *ngIf="!profileSubmitted">
+                <i class="bi bi-save me-2"></i>Update Profile
+              </span>
+              <span *ngIf="profileSubmitted">
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Updating...
+              </span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Change Password Card -->
+      <div class="card shadow">
+        <div class="card-header bg-warning">
+          <h5 class="mb-0">
+            <i class="bi bi-key me-2"></i>Change Password
+          </h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="!showPasswordForm">
+            <p class="text-muted">
+              <i class="bi bi-info-circle me-2"></i>
+              Click the button below to change your password
+            </p>
+            <button class="btn btn-warning w-100" (click)="togglePasswordForm()">
+              <i class="bi bi-unlock me-2"></i>Change Password
+            </button>
+          </div>
+
+          <div *ngIf="showPasswordForm">
+            <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" autocomplete="off">
+              
+              <!-- Email (Hidden/Readonly) -->
+              <div class="form-floating mb-3">
+                <input formControlName="email" 
+                       type="email" 
+                       placeholder="Email" 
+                       class="form-control"
+                       readonly>
+                <label for="email">Email</label>
+              </div>
+
+              <!-- Current Password -->
+              <div class="form-floating mb-3">
+                <input formControlName="currentPassword" 
+                       type="password" 
+                       placeholder="Current Password" 
+                       class="form-control"
+                       [class.is-invalid]="passwordSubmitted && passwordForm.get('currentPassword')?.errors">
+                <label for="currentPassword">Current Password</label>
+                <span class="text-danger" *ngIf="passwordSubmitted && passwordForm.get('currentPassword')?.hasError('required')">
+                  Current password is required
+                </span>
+                <span class="text-danger"
+                    *ngIf="passwordSubmitted && 
+                    passwordForm.get('currentPassword')?.hasError('minlength') || passwordForm.get('currentPassword')?.hasError('maxlength')">
+                  Password must be at least 6, and maximum 15 characters
+                </span>
+              </div>
+
+              <!-- New Password -->
+              <div class="form-floating mb-3">
+                <input formControlName="newPassword" 
+                       type="password" 
+                       placeholder="New Password" 
+                       class="form-control"
+                       [class.is-invalid]="passwordSubmitted && passwordForm.get('newPassword')?.errors">
+                <label for="newPassword">New Password</label>
+                <span class="text-danger" *ngIf="passwordSubmitted && passwordForm.get('newPassword')?.hasError('required')">
+                  New password is required
+                </span>
+                <span class="text-danger"
+                    *ngIf="passwordSubmitted && 
+                    passwordForm.get('newPassword')?.hasError('minlength') || passwordForm.get('newPassword')?.hasError('maxlength')">
+                  New password must be at least 6, and maximum 15 characters
+                </span>
+              </div>
+
+              <!-- Confirm New Password -->
+              <div class="form-floating mb-3">
+                <input formControlName="confirmNewPassword" 
+                       type="password" 
+                       placeholder="Confirm New Password" 
+                       class="form-control"
+                       [class.is-invalid]="passwordSubmitted && passwordForm.get('confirmNewPassword')?.errors">
+                <label for="confirmNewPassword">Confirm New Password</label>
+                <span class="text-danger" *ngIf="passwordSubmitted && passwordForm.get('confirmNewPassword')?.hasError('required')">
+                  Please confirm your new password
+                </span>
+              </div>
+
+              <!-- Backend Error Messages -->
+              <div class="mb-3" *ngIf="errorMessages.length > 0 && showPasswordForm">
+                <app-validation-messages [errorMessages]="errorMessages"></app-validation-messages>
+              </div>
+
+              <!-- Buttons -->
+              <div class="row">
+                <div class="col-6">
+                  <button type="submit" 
+                          class="btn btn-success w-100" 
+                          [disabled]="passwordSubmitted">
+                    <span *ngIf="!passwordSubmitted">
+                      <i class="bi bi-check-circle me-2"></i>Change
+                    </span>
+                    <span *ngIf="passwordSubmitted">
+                      <span class="spinner-border spinner-border-sm me-2"></span>
+                      Changing...
+                    </span>
+                  </button>
+                </div>
+                <div class="col-6">
+                  <button type="button" 
+                          class="btn btn-secondary w-100" 
+                          (click)="togglePasswordForm()">
+                    <i class="bi bi-x-circle me-2"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -80,7 +80,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
    * Customer dropdown এর কোনো route active আছে কিনা চেক করে
    */
   isCustomerDropdownActive(): boolean {
-    return this.isRouteActive(['/customer', '/orders']);
+    return this.isRouteActive([ 
+      '/customer/dashboard', 
+      '/customer/profile',
+      '/customer',
+      '/orders'
+    ]);
   }
 
   /**

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomerService } from './services/customer.service';
+import { CustomerService } from '../../services/customer.service';
 
 @Component({
   selector: 'app-customer',
   templateUrl: './customer.component.html',
   styleUrls: ['./customer.component.scss']
 })
+
 export class CustomerComponent implements OnInit{
   message: string | undefined;
 
@@ -17,5 +18,4 @@ export class CustomerComponent implements OnInit{
       error: error => console.log(error)
     })
   }
-
 }

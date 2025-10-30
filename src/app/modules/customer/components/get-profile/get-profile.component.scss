@@ -1,0 +1,212 @@
+// src/app/modules/customer/components/customer/customer.component.scss
+
+.container {
+  h1 {
+    color: #333;
+    font-weight: 600;
+  }
+}
+
+// Profile Card
+.profile-card {
+  border: none;
+  
+  .card-body {
+    padding: 2rem;
+  }
+}
+
+// Profile Avatar
+.profile-avatar {
+  i {
+    font-size: 8rem;
+    color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+// Member Since
+.member-since {
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+// Information Box
+.info-box {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  border-left: 4px solid #007bff;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: #e9ecef;
+    transform: translateX(5px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .info-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+  }
+  
+  .info-value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+  }
+}
+
+// Statistics Cards
+.stat-card {
+  border: none;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  .stat-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+  }
+}
+
+// Card Styling
+.card {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  .card-header {
+    font-weight: 600;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    
+    h5 {
+      margin: 0;
+    }
+  }
+}
+
+// Badge Styling
+.badge {
+  font-size: 0.95rem;
+  padding: 0.5em 1em;
+  font-weight: 500;
+}
+
+// Quick Actions Buttons
+.btn-outline-primary,
+.btn-outline-success,
+.btn-outline-info {
+  padding: 1.5rem 1rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  i {
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover i {
+    transform: scale(1.2);
+  }
+}
+
+// Loading State
+.spinner-border {
+  border-width: 0.3rem;
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+// Responsive Design
+@media (max-width: 992px) {
+  .profile-avatar i {
+    font-size: 6rem;
+  }
+  
+  .stat-card {
+    margin-bottom: 1rem;
+    
+    .stat-icon {
+      font-size: 2.5rem;
+    }
+    
+    h2 {
+      font-size: 2rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-avatar i {
+    font-size: 5rem;
+  }
+  
+  .info-box {
+    margin-bottom: 1rem;
+  }
+  
+  .btn-outline-primary,
+  .btn-outline-success,
+  .btn-outline-info {
+    padding: 1rem;
+    
+    i {
+      font-size: 1.5rem !important;
+    }
+  }
+  
+  h1 {
+    font-size: 1.75rem;
+  }
+}
+
+// Print Styles
+@media print {
+  .btn,
+  .stat-card {
+    display: none !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #dee2e6 !important;
+  }
+}

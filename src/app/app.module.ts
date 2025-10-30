@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './components/home/home.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { CustomerComponent } from './components/customer/customer.component';
 import { AccountModule } from './modules/account/account.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { SharedModule } from './modules/shared/shared.module';
@@ -18,6 +17,9 @@ import { PackageModule } from './modules/package/package.module';
 import { NotificationComponent } from './modules/shared/components/modals/notification/notification.component';
 import { CartModule } from './modules/cart/cart.module';
 import { OrderModule } from './modules/order/order.module';
+import { CustomerModule } from './modules/customer/customer.module';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 //Angular 16 project is created using 'npx -p @angular/cli@16 ng new NgETravel' command. Guide Link- https://www.youtube.com/watch?v=LYNG3kcKRQ8
 
@@ -26,8 +28,7 @@ import { OrderModule } from './modules/order/order.module';
     AppComponent,
     NavbarComponent,
     HomeComponent,
-    FooterComponent,
-    CustomerComponent
+    FooterComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +40,10 @@ import { OrderModule } from './modules/order/order.module';
     ModalModule.forRoot(),
     PackageModule,
     CartModule,
-    OrderModule
+    OrderModule,
+    CustomerModule,
+    CommonModule,
+    RouterModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}

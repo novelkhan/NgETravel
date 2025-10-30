@@ -1,0 +1,149 @@
+// customer-dashboard.component.scss
+
+.container {
+  h1 {
+    color: #333;
+    font-weight: 600;
+  }
+}
+
+.card {
+  border: none;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  .card-header {
+    font-weight: 600;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    
+    h5 {
+      margin: 0;
+    }
+  }
+}
+
+// Avatar Circle
+.avatar-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  i {
+    font-size: 4rem;
+    color: white;
+  }
+}
+
+// Info Items
+.info-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  i {
+    color: #007bff;
+  }
+  
+  strong {
+    display: inline-block;
+    min-width: 120px;
+  }
+}
+
+// Badge Styling
+.badge {
+  font-size: 0.875rem;
+  padding: 0.375em 0.75em;
+  font-weight: 500;
+}
+
+// Form Styling
+.form-floating {
+  > .form-control {
+    &:focus {
+      border-color: #80bdff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    &.is-invalid {
+      border-color: #dc3545;
+      
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+      }
+    }
+  }
+}
+
+// Button Styling
+.btn {
+  transition: all 0.2s;
+  font-weight: 500;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// Error Messages
+.text-danger {
+  font-size: 0.875rem;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .avatar-circle {
+    width: 100px;
+    height: 100px;
+    
+    i {
+      font-size: 3rem;
+    }
+  }
+  
+  .info-item strong {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .card {
+    margin-bottom: 1rem;
+  }
+}
+
+// Animation
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeIn 0.5s ease-out;
+}
