@@ -1,0 +1,248 @@
+<!-- package-showcase.component.html - ERROR FIXED VERSION -->
+
+<div class="package-showcase-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">লোড হচ্ছে...</span>
+    </div>
+    <p class="mt-3">প্যাকেজ লোড হচ্ছে...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && packages.length > 0" class="showcase-content">
+    <div class="container py-5">
+      <!-- Header -->
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">
+          <i class="bi bi-globe2 me-3"></i>আমাদের ট্যুর প্যাকেজসমূহ
+        </h1>
+        <p class="lead text-muted">আপনার স্বপ্নের ভ্রমণ আমাদের সাথে শুরু করুন</p>
+        <div class="package-counter">
+          <span class="badge bg-primary fs-6">
+            প্যাকেজ {{currentPackageIndex + 1}} / {{packages.length}}
+          </span>
+        </div>
+      </div>
+
+      <!-- Package Display -->
+      <div class="package-card shadow-lg" *ngIf="getCurrentPackage() as package">
+        <div class="row g-0">
+          <!-- Image Slider Section -->
+          <div class="col-lg-7">
+            <div class="image-slider-container">
+              <!-- Main Image -->
+              <div class="main-image-wrapper">
+                <img [src]="getCurrentImage()" 
+                     [alt]="package.packageName" 
+                     class="main-image"
+                     loading="lazy"
+                     (click)="toggleFullscreen()">
+                
+                <!-- Image Navigation Arrows -->
+                <button class="slider-btn slider-btn-prev" 
+                        (click)="previousImage()"
+                        [disabled]="currentImageIndex === 0">
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="slider-btn slider-btn-next" 
+                        (click)="nextImage()"
+                        [disabled]="currentImageIndex === getPackageImages(package).length - 1">
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+
+                <!-- Image Counter -->
+                <div class="image-counter">
+                  {{currentImageIndex + 1}} / {{getPackageImages(package).length}}
+                </div>
+
+                <!-- Slideshow Controls -->
+                <div class="slideshow-controls">
+                  <button class="btn btn-sm btn-light" (click)="pauseSlideshow()">
+                    <i class="bi bi-pause-fill"></i>
+                  </button>
+                  <button class="btn btn-sm btn-light" (click)="resumeSlideshow()">
+                    <i class="bi bi-play-fill"></i>
+                  </button>
+                </div>
+
+                <!-- Autoplay Toggle Button -->
+                <div class="autoplay-toggle">
+                  <button class="btn btn-sm" 
+                          [class.btn-success]="isAutoPlayEnabled"
+                          [class.btn-secondary]="!isAutoPlayEnabled"
+                          (click)="toggleAutoPlay()">
+                    <i class="bi" 
+                       [class.bi-pause-circle]="isAutoPlayEnabled"
+                       [class.bi-play-circle]="!isAutoPlayEnabled"></i>
+                    {{isAutoPlayEnabled ? 'অটো' : 'ম্যানুয়াল'}}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Thumbnail Strip -->
+              <div class="thumbnail-strip">
+                <div *ngFor="let img of getPackageImages(package); let i = index" 
+                     class="thumbnail"
+                     [class.active]="i === currentImageIndex"
+                     (click)="goToImage(i)">
+                  <img [src]="img" 
+                       [alt]="'Image ' + (i + 1)"
+                       loading="lazy">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Package Details Section -->
+          <div class="col-lg-5">
+            <div class="package-details">
+              <!-- Package Header -->
+              <div class="package-header">
+                <h2 class="package-title">{{package.packageName}}</h2>
+                <div class="package-destination">
+                  <i class="bi bi-geo-alt-fill text-danger"></i>
+                  <span>{{package.destination}}</span>
+                </div>
+              </div>
+
+              <!-- Package Info -->
+              <div class="package-info">
+                <!-- Description -->
+                <div class="info-section" *ngIf="package.packageData && package.packageData.description">
+                  <h5 class="info-title">
+                    <i class="bi bi-info-circle me-2"></i>বিবরণ
+                  </h5>
+                  <p class="info-text">{{package.packageData.description}}</p>
+                </div>
+
+                <!-- Via Destination -->
+                <div class="info-section" *ngIf="package.packageData && package.packageData.viaDestination">
+                  <h5 class="info-title">
+                    <i class="bi bi-signpost-2 me-2"></i>মাধ্যমে
+                  </h5>
+                  <p class="info-text">{{package.packageData.viaDestination}}</p>
+                </div>
+
+                <!-- Date -->
+                <div class="info-section" *ngIf="package.packageData && package.packageData.date">
+                  <h5 class="info-title">
+                    <i class="bi bi-calendar-event me-2"></i>যাত্রার তারিখ
+                  </h5>
+                  <p class="info-text">{{formatDate(package.packageData.date)}}</p>
+                </div>
+
+                <!-- Available Seats -->
+                <div class="info-section" *ngIf="package.packageData && package.packageData.availableSeat">
+                  <h5 class="info-title">
+                    <i class="bi bi-people me-2"></i>উপলব্ধ আসন
+                  </h5>
+                  <p class="info-text">
+                    <span class="badge bg-success fs-6">
+                      {{package.packageData.availableSeat}} টি আসন
+                    </span>
+                  </p>
+                </div>
+
+                <!-- Price -->
+                <div class="price-section">
+                  <div class="price-label">মূল্য</div>
+                  <div class="price-amount">৳{{package.price}}</div>
+                  <div class="price-note">প্রতি ব্যক্তি</div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="action-buttons">
+                <!-- Customer Buttons -->
+                <ng-container *appUserHasRole="['Customer']">
+                  <div class="row g-2" *appUserHasNotRole="['Admin']">
+                    <div class="col-6">
+                      <button class="btn btn-success btn-lg w-100" 
+                              (click)="buyNow(package.packageId)">
+                        <i class="bi bi-cart-check me-2"></i>এখনই কিনুন
+                      </button>
+                    </div>
+                    <div class="col-6">
+                      <button class="btn btn-primary btn-lg w-100" 
+                              (click)="addToCart(package.packageId)">
+                        <i class="bi bi-cart-plus me-2"></i>কার্টে যোগ করুন
+                      </button>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <!-- Share Button - যে কোনো ইউজার দেখতে পারবে -->
+                <div class="row g-2 mt-2">
+                  <div class="col-12">
+                    <button class="btn btn-outline-primary w-100" 
+                            (click)="sharePackage(package.packageId)">
+                      <i class="bi bi-share me-2"></i> শেয়ার করুন
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Admin Buttons -->
+                <div class="row g-2 mt-2" *appUserHasRole="['Admin']">
+                  <div class="col-6">
+                    <button class="btn btn-warning btn-lg w-100" 
+                            (click)="editPackage(package.packageId)">
+                      <i class="bi bi-pencil-square me-2"></i>এডিট
+                    </button>
+                  </div>
+                  <div class="col-6">
+                    <button class="btn btn-danger btn-lg w-100" 
+                            (click)="deletePackage(package.packageId)">
+                      <i class="bi bi-trash me-2"></i>ডিলিট
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Package Navigation -->
+              <div class="package-navigation">
+                <button class="btn btn-outline-secondary" 
+                        (click)="previousPackage()"
+                        [disabled]="currentPackageIndex === 0">
+                  <i class="bi bi-arrow-left me-2"></i>পূর্ববর্তী
+                </button>
+                <button class="btn btn-outline-secondary" 
+                        (click)="nextPackage()"
+                        [disabled]="currentPackageIndex === packages.length - 1">
+                  পরবর্তী<i class="bi bi-arrow-right ms-2"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Package Dots Navigation -->
+      <div class="package-dots">
+        <button *ngFor="let pkg of packages; let i = index"
+                class="dot"
+                [class.active]="i === currentPackageIndex"
+                (click)="goToPackage(i)"
+                [title]="pkg.packageName">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Packages State -->
+  <div *ngIf="!isLoading && packages.length === 0" class="no-packages">
+    <i class="bi bi-inbox display-1 text-muted"></i>
+    <h3 class="mt-3">কোনো প্যাকেজ পাওয়া যায়নি</h3>
+    <p class="text-muted">এই মুহূর্তে কোনো ট্যুর প্যাকেজ উপলব্ধ নেই</p>
+  </div>
+
+  <!-- Fullscreen Modal -->
+  <div class="fullscreen-modal" *ngIf="isFullscreen" (click)="toggleFullscreen()">
+    <img [src]="getCurrentImage()" 
+         alt="Fullscreen Image"
+         loading="lazy">
+    <button class="close-fullscreen" (click)="toggleFullscreen()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+</div>

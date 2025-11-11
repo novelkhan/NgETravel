@@ -53,4 +53,13 @@ export class PackageService {
       },
     });
   }
+
+
+  // package.service.ts এ নতুন মেথড যোগ করুন
+  /**
+   * Fetch all packages with full details including images
+   */
+  getPackagesWithDetails(): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/api/package/packages-with-details`);
+  }
 }

@@ -7,13 +7,15 @@ import { PackagesComponent } from './components/packages/packages.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from "../shared/shared.module";
 import { EditPackageComponent } from './components/edit-package/edit-package.component';
+import { PackageShowcaseComponent } from './components/package-showcase/package-showcase.component';
 
 
 @NgModule({
   declarations: [
     AddPackageComponent,
     PackagesComponent,
-    EditPackageComponent
+    EditPackageComponent,
+    PackageShowcaseComponent
   ],
   imports: [
     CommonModule,
@@ -21,6 +23,7 @@ import { EditPackageComponent } from './components/edit-package/edit-package.com
     ReactiveFormsModule,
     SharedModule,
     FormsModule
-]
+],
+exports: [PackageShowcaseComponent]
 })
 export class PackageModule { }

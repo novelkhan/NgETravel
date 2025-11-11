@@ -19,11 +19,31 @@
                     </li>
                     
                     <!-- Packages Menu - সবার জন্য -->
-                    <li class="nav-item">
-                        <a class="nav-link" routerLink="/packages" routerLinkActive="active"
-                           [routerLinkActiveOptions]="{exact: true}">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" 
+                            href="#" 
+                            id="packagesDropdown" 
+                            role="button" 
+                            data-bs-toggle="dropdown">
                             <i class="bi bi-box-seam"></i> Packages
                         </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" 
+                                    routerLink="/packages" 
+                                    routerLinkActive="active"
+                                    [routerLinkActiveOptions]="{exact: true}">
+                                    <i class="bi bi-grid"></i> All Packages
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" 
+                                    routerLink="/packages/showcase" 
+                                    routerLinkActive="active">
+                                    <i class="bi bi-play-circle"></i> Package Showcase
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     
                     <!-- Customer Dropdown Menu - শুধু Customer দের জন্য (Admin নয়) -->

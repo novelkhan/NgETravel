@@ -4,9 +4,11 @@ import { AdminGuard } from '../shared/guards/admin.guard';
 import { AddPackageComponent } from './components/add-package/add-package.component';
 import { PackagesComponent } from './components/packages/packages.component';
 import { EditPackageComponent } from './components/edit-package/edit-package.component';
+import { PackageShowcaseComponent } from './components/package-showcase/package-showcase.component';
 
 const routes: Routes = [
   { path: '', component: PackagesComponent},
+  { path: 'showcase', component: PackageShowcaseComponent}, 
   {
     path: '',
     runGuardsAndResolvers: 'always',

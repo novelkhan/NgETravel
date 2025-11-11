@@ -1,5 +1,194 @@
-<footer class="border-top border-primary">
-    <div class="mt-2 text-center">
-        <h6>Copyright &copy; {{currentYear}}<a class="link"> Unique Travels</a></h6>
+<!-- footer.component.html - COMPLETE BEAUTIFUL VERSION -->
+
+<footer class="footer-section">
+  <!-- Main Footer -->
+  <div class="footer-main">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Company Info -->
+        <div class="col-lg-4 col-md-6">
+          <div class="footer-widget">
+            <div class="footer-logo mb-4">
+              <img src="./assets/images/logo.png" alt="Logo" class="logo-img">
+              <h3 class="company-name">Unique Travels</h3>
+            </div>
+            <p class="footer-description">
+              আমরা আপনার স্বপ্নের ভ্রমণকে বাস্তবে রূপান্তরিত করি। নিরাপদ, আরামদায়ক এবং স্মরণীয় ভ্রমণ অভিজ্ঞতার জন্য আমাদের সাথে থাকুন।
+            </p>
+            <div class="social-links">
+              <a href="#" class="social-link facebook" title="Facebook">
+                <i class="bi bi-facebook"></i>
+              </a>
+              <a href="#" class="social-link twitter" title="Twitter">
+                <i class="bi bi-twitter"></i>
+              </a>
+              <a href="#" class="social-link instagram" title="Instagram">
+                <i class="bi bi-instagram"></i>
+              </a>
+              <a href="#" class="social-link youtube" title="YouTube">
+                <i class="bi bi-youtube"></i>
+              </a>
+              <a href="#" class="social-link whatsapp" title="WhatsApp">
+                <i class="bi bi-whatsapp"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="col-lg-2 col-md-6">
+          <div class="footer-widget">
+            <h4 class="widget-title">দ্রুত লিংক</h4>
+            <ul class="footer-links">
+              <li><a routerLink="/"><i class="bi bi-chevron-right"></i> হোম</a></li>
+              <li><a routerLink="/packages"><i class="bi bi-chevron-right"></i> প্যাকেজসমূহ</a></li>
+              <li><a routerLink="/packages/showcase"><i class="bi bi-chevron-right"></i> শোকেস</a></li>
+              <li><a routerLink="/about"><i class="bi bi-chevron-right"></i> আমাদের সম্পর্কে</a></li>
+              <li><a routerLink="/contact"><i class="bi bi-chevron-right"></i> যোগাযোগ</a></li>
+              <li><a routerLink="/terms"><i class="bi bi-chevron-right"></i> শর্তাবলী</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Popular Destinations -->
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-widget">
+            <h4 class="widget-title">জনপ্রিয় গন্তব্য</h4>
+            <ul class="footer-links">
+              <li><a href="#"><i class="bi bi-geo-alt"></i> কক্সবাজার</a></li>
+              <li><a href="#"><i class="bi bi-geo-alt"></i> সুন্দরবন</a></li>
+              <li><a href="#"><i class="bi bi-geo-alt"></i> সিলেট</a></li>
+              <li><a href="#"><i class="bi bi-geo-alt"></i> রাঙ্গামাটি</a></li>
+              <li><a href="#"><i class="bi bi-geo-alt"></i> সেন্টমার্টিন</a></li>
+              <li><a href="#"><i class="bi bi-geo-alt"></i> বান্দরবান</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-widget">
+            <h4 class="widget-title">যোগাযোগ</h4>
+            <ul class="contact-info">
+              <li>
+                <i class="bi bi-geo-alt-fill"></i>
+                <div class="contact-text">
+                  <strong>ঠিকানা:</strong>
+                  <p>১২৩/এ, ধানমন্ডি, ঢাকা-১২০৫</p>
+                </div>
+              </li>
+              <li>
+                <i class="bi bi-telephone-fill"></i>
+                <div class="contact-text">
+                  <strong>ফোন:</strong>
+                  <p>+৮৮০ ১৭১২-৩৪৫৬৭৮<br>+৮৮০ ১৯১২-৩৪৫৬৭৮</p>
+                </div>
+              </li>
+              <li>
+                <i class="bi bi-envelope-fill"></i>
+                <div class="contact-text">
+                  <strong>ইমেইল:</strong>
+                  <p>info@uniquetravels.com<br>support@uniquetravels.com</p>
+                </div>
+              </li>
+              <li>
+                <i class="bi bi-clock-fill"></i>
+                <div class="contact-text">
+                  <strong>কর্মসময়:</strong>
+                  <p>সকাল ৯:০০ - রাত ৮:০০<br>শনি - বৃহস্পতিবার</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Newsletter Section -->
+  <div class="newsletter-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-3 mb-lg-0">
+          <div class="newsletter-content">
+            <i class="bi bi-envelope-paper newsletter-icon"></i>
+            <div>
+              <h4 class="newsletter-title">নিউজলেটার সাবস্ক্রাইব করুন</h4>
+              <p class="newsletter-text">নতুন অফার ও প্যাকেজের আপডেট পেতে সাবস্ক্রাইব করুন</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <form class="newsletter-form">
+            <div class="input-group">
+              <input type="email" class="form-control" placeholder="আপনার ইমেইল এড্রেস লিখুন" required>
+              <button class="btn btn-primary" type="submit">
+                <i class="bi bi-send-fill"></i> সাবস্ক্রাইব
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Methods -->
+  <div class="payment-section">
+    <div class="container">
+      <div class="text-center">
+        <h5 class="payment-title">আমরা গ্রহণ করি</h5>
+        <div class="payment-methods">
+          <div class="payment-icon">
+            <i class="bi bi-credit-card-2-front"></i>
+            <span>Visa</span>
+          </div>
+          <div class="payment-icon">
+            <i class="bi bi-credit-card"></i>
+            <span>Mastercard</span>
+          </div>
+          <div class="payment-icon">
+            <i class="bi bi-phone"></i>
+            <span>bKash</span>
+          </div>
+          <div class="payment-icon">
+            <i class="bi bi-phone"></i>
+            <span>Nagad</span>
+          </div>
+          <div class="payment-icon">
+            <i class="bi bi-phone"></i>
+            <span>Rocket</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Footer -->
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+          <p class="copyright-text">
+            <i class="bi bi-c-circle"></i> {{currentYear}} 
+            <a routerLink="/" class="brand-link">Unique Travels</a>. 
+            সর্বস্বত্ব সংরক্ষিত।
+          </p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <div class="footer-bottom-links">
+            <a routerLink="/privacy">গোপনীয়তা নীতি</a>
+            <span class="separator">|</span>
+            <a routerLink="/terms">শর্তাবলী</a>
+            <span class="separator">|</span>
+            <a routerLink="/refund">রিফান্ড নীতি</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll to Top Button -->
+  <button class="scroll-to-top" (click)="scrollToTop()" [class.show]="showScrollButton">
+    <i class="bi bi-arrow-up"></i>
+  </button>
 </footer>
